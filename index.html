@@ -1,0 +1,3396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Engineer Command Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg2: #0f1320;
+    --bg3: #141929;
+    --surface: #1a2035;
+    --surface2: #1f2640;
+    --border: #2a3350;
+    --border-bright: #3d4f7a;
+    --text: #e2e8f8;
+    --text-muted: #7a8ab0;
+    --text-dim: #4a5878;
+    --accent: #4f8ef7;
+    --accent2: #7c5cf7;
+    --accent3: #22d3a0;
+    --accent4: #f7924f;
+    --accent5: #f74f7e;
+    --accent-mac: #22d3a0;
+    --accent-win: #4f8ef7;
+    --accent-fg: #f7d94f;
+    --accent-k8s: #7c5cf7;
+    --accent-gitlab: #f74f7e;
+    --glow: rgba(79, 142, 247, 0.15);
+    --glow2: rgba(124, 92, 247, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 48px 40px 36px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(10,13,20,0.98) 0%, rgba(15,19,32,0.95) 100%);
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 0 30px rgba(79,142,247,0.4);
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 480px;
+    min-width: 240px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  #searchInput {
+    width: 100%;
+    padding: 13px 16px 13px 46px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  #searchInput:focus {
+    border-color: var(--accent);
+    background: var(--surface2);
+    box-shadow: 0 0 0 3px var(--glow);
+  }
+
+  #searchInput::placeholder { color: var(--text-dim); }
+
+  #clearSearch {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    display: none;
+    line-height: 1;
+    padding: 2px;
+    border-radius: 4px;
+  }
+  #clearSearch:hover { color: var(--text); }
+
+  /* NAV PILLS */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(10,13,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+  }
+
+  .nav-scroll-hint {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    background: linear-gradient(90deg, transparent, rgba(10,13,20,0.98));
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    position: relative;
+  }
+  .nav-inner::-webkit-scrollbar { height: 3px; }
+  .nav-inner::-webkit-scrollbar-track { background: transparent; }
+  .nav-inner::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .nav-pill {
+    flex-shrink: 0;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-pill:hover {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .nav-pill.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* RESULTS BAR */
+  #resultsBar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  #resultsBar.visible { display: flex; }
+  #resultsCount { color: var(--accent); font-weight: 700; }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 56px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .section-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--surface);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+
+  /* COLOR THEMES PER SECTION */
+  .s-windows .section-badge { background: rgba(79,142,247,0.15); }
+  .s-mac .section-badge { background: rgba(34,211,160,0.15); }
+  .s-fortigate .section-badge { background: rgba(247,146,79,0.15); }
+  .s-kubernetes .section-badge { background: rgba(124,92,247,0.15); }
+  .s-gitlab .section-badge { background: rgba(247,79,126,0.15); }
+  .s-cross .section-badge { background: rgba(247,217,79,0.15); }
+  .s-network .section-badge { background: rgba(34,211,160,0.15); }
+  .s-troubleshoot .section-badge { background: rgba(247,79,79,0.15); }
+
+  .s-windows .section-title { color: var(--accent-win); }
+  .s-mac .section-title { color: var(--accent-mac); }
+  .s-fortigate .section-title { color: var(--accent4); }
+  .s-kubernetes .section-title { color: var(--accent-k8s); }
+  .s-gitlab .section-title { color: var(--accent-gitlab); }
+  .s-cross .section-title { color: var(--accent-fg); }
+  .s-network .section-title { color: var(--accent-mac); }
+  .s-troubleshoot .section-title { color: #f74f4f; }
+  .s-powershell .section-badge { background: rgba(0,188,212,0.15); }
+  .s-powershell .section-title { color: #00bcd4; }
+  .cmd-ps { color: #00bcd4; }
+  .s-linux .section-badge { background: rgba(255,179,0,0.15); }
+  .s-linux .section-title { color: #ffb300; }
+  .cmd-lx { color: #ffb300; }
+
+  /* TROUBLESHOOTING GUIDE STYLES */
+  .ts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+  }
+
+  .ts-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .ts-card:hover { border-color: var(--border-bright); }
+
+  .ts-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .ts-card.open .ts-card-header { background: var(--surface2); }
+
+  .ts-card-icon { font-size: 20px; flex-shrink: 0; }
+
+  .ts-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    flex: 1;
+  }
+
+  .ts-card-chevron {
+    color: var(--text-dim);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .ts-card.open .ts-card-chevron { transform: rotate(180deg); }
+
+  .ts-card-body { display: none; }
+  .ts-card.open .ts-card-body { display: block; }
+
+  .ts-step {
+    display: flex;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid rgba(42,51,80,0.5);
+    align-items: flex-start;
+  }
+
+  .ts-step:last-child { border-bottom: none; }
+
+  .ts-step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ts-step-content { flex: 1; min-width: 0; }
+
+  .ts-step-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .ts-step-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-fg);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin: 5px 0;
+    display: block;
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.65;
+  }
+
+  .ts-step-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.55;
+  }
+
+  .ts-step-note code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: var(--accent-fg);
+  }
+
+  /* TABLE */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .cmd-table thead th {
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .cmd-table thead th:first-child { border-radius: 8px 0 0 0; }
+  .cmd-table thead th:last-child { border-radius: 0 8px 0 0; }
+
+  .cmd-row {
+    border-bottom: 1px solid rgba(42,51,80,0.5);
+    transition: background 0.15s;
+  }
+
+  .cmd-row:hover { background: rgba(30,38,65,0.6); }
+  .cmd-row.hidden { display: none; }
+
+  .cmd-row td {
+    padding: 12px 16px;
+    vertical-align: top;
+  }
+
+  .cmd-table tbody tr:last-child td { border-bottom: none; }
+
+  .cell-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* CODE CELLS */
+  .code-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .cmd-win { color: var(--accent-win); }
+  .cmd-mac { color: var(--accent-mac); }
+  .cmd-fg { color: var(--accent-fg); }
+  .cmd-k8s { color: var(--accent-k8s); }
+  .cmd-gl { color: var(--accent-gitlab); }
+  .cmd-net { color: var(--accent-mac); }
+  .cmd-same { color: var(--text-muted); font-style: italic; }
+
+  /* DESC CELL */
+  .desc-cell {
+    color: var(--text-muted);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  .desc-cell strong {
+    color: var(--text);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .tag-danger { background: rgba(247,79,126,0.15); color: var(--accent5); border: 1px solid rgba(247,79,126,0.3); }
+  .tag-info { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
+  .tag-tip { background: rgba(34,211,160,0.12); color: var(--accent3); border: 1px solid rgba(34,211,160,0.25); }
+  .tag-admin { background: rgba(247,146,79,0.12); color: var(--accent4); border: 1px solid rgba(247,146,79,0.25); }
+
+  /* FORTIGATE SPECIAL */
+  .fg-mode {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(247,217,79,0.12);
+    color: var(--accent-fg);
+    border: 1px solid rgba(247,217,79,0.25);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 3px;
+  }
+
+  /* NO RESULTS */
+  #noResults {
+    display: none;
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  #noResults.visible { display: block; }
+  #noResults h3 { font-size: 20px; margin-bottom: 8px; color: var(--text-muted); }
+  #noResults p { font-size: 14px; }
+
+  /* SECTION HIDDEN */
+  .section.all-hidden { display: none; }
+
+  /* HIGHLIGHT */
+  mark {
+    background: rgba(247,217,79,0.25);
+    color: var(--accent-fg);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* COPY BUTTON */
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 10px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.15s;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--accent3); color: var(--accent3); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    header, .nav-bar, main { padding-left: 16px; padding-right: 16px; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .search-wrap { max-width: 100%; width: 100%; }
+    .cmd-row td { padding: 10px 10px; }
+    h1 { font-size: 20px; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
+
+  /* BACK TO TOP */
+  #backToTop {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  #backToTop:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #backToTop.visible { display: flex; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">⬡</div>
+      <div>
+        <h1>NetEng <span>Command Reference</span></h1>
+        <p class="subtitle">Windows · macOS · Linux · FortiGate · Kubernetes · GitLab — for the whole tech team</p>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search commands, descriptions, flags..." autocomplete="off" spellcheck="false">
+      <button id="clearSearch" title="Clear search">×</button>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-bar">
+  <div class="nav-scroll-hint"></div>
+  <div class="nav-inner">
+    <button class="nav-pill active" onclick="filterSection('all')">All Sections</button>
+    <button class="nav-pill" onclick="filterSection('cross')">🔀 Cross-Platform</button>
+    <button class="nav-pill" onclick="filterSection('mac')">🍎 macOS Terminal</button>
+    <button class="nav-pill" onclick="filterSection('windows')">🪟 Windows CMD/PS</button>
+    <button class="nav-pill" onclick="filterSection('network')">🌐 Network Diagnostics</button>
+    <button class="nav-pill" onclick="filterSection('fortigate')">🔥 FortiGate</button>
+    <button class="nav-pill" onclick="filterSection('kubernetes')">☸ Kubernetes</button>
+    <button class="nav-pill" onclick="filterSection('gitlab')">🦊 GitLab / Git</button>
+    <button class="nav-pill" onclick="filterSection('troubleshoot')">🚨 Troubleshooting Guides</button>
+    <button class="nav-pill" onclick="filterSection('powershell')">⚙️ PowerShell &amp; Entra ID</button>
+    <button class="nav-pill" onclick="filterSection('linux')">🐧 Linux / Shell</button>
+  </div>
+</nav>
+
+<main>
+  <div id="resultsBar"><span id="resultsCount">0</span> results found for "<span id="searchTerm"></span>"</div>
+  <div id="noResults"><h3>No commands found</h3><p>Try a different keyword, command name, or description</p></div>
+
+  <!-- ─── CROSS-PLATFORM ─────────────────────────────────────── -->
+  <section class="section s-cross" id="sec-cross">
+    <div class="section-header">
+      <div class="section-badge">🔀</div>
+      <div class="section-title">Windows CMD → macOS Terminal Equivalents</div>
+      <span class="section-count">Network Core</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr>
+            <th>Windows CMD / PowerShell</th>
+            <th>macOS Terminal</th>
+            <th>Description &amp; Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="ipconfig ifconfig show interfaces ip address network adapter">
+            <td><code class="code-cell cmd-win">ipconfig</code></td>
+            <td><code class="code-cell cmd-mac">ifconfig</code><br><code class="code-cell cmd-mac">ip addr</code></td>
+            <td class="desc-cell"><strong>Show Network Interfaces &amp; IPs</strong>Lists all active network interfaces, their IP addresses, subnet masks, and link-local addresses. Use <code>ip addr</code> for more modern output on macOS/Linux. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ipconfig /all ifconfig networksetup detailed NIC info mac address dns">
+            <td><code class="code-cell cmd-win">ipconfig /all</code></td>
+            <td><code class="code-cell cmd-mac">ifconfig -a</code><br><code class="code-cell cmd-mac">networksetup -listallhardwareports</code></td>
+            <td class="desc-cell"><strong>Detailed NIC Information</strong>Shows full adapter details including MAC addresses, DHCP status, DNS servers, and lease info. The <code>networksetup</code> command is macOS-specific and shows hardware port names. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ipconfig /flushdns flush dns cache dscacheutil mDNSResponder clear resolver">
+            <td><code class="code-cell cmd-win">ipconfig /flushdns</code></td>
+            <td><code class="code-cell cmd-mac">sudo dscacheutil -flushcache
+sudo killall -HUP mDNSResponder</code></td>
+            <td class="desc-cell"><strong>Flush DNS Cache</strong>Clears the local DNS resolver cache. Essential after DNS changes, split-tunnel VPN issues, or when troubleshooting stale DNS entries. Both commands required on modern macOS. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ipconfig /release /renew dhcp release renew lease">
+            <td><code class="code-cell cmd-win">ipconfig /release
+ipconfig /renew</code></td>
+            <td><code class="code-cell cmd-mac">sudo ipconfig set en0 DHCP
+sudo ipconfig set en0 NONE</code></td>
+            <td class="desc-cell"><strong>Release / Renew DHCP Lease</strong>Force a new DHCP lease. Replace <code>en0</code> with your interface (en1 for Wi-Fi on some Macs). Useful when IP conflicts arise or after VLAN changes. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ping latency packet loss reachability icmp">
+            <td><code class="code-cell cmd-win">ping 8.8.8.8
+ping -n 10 8.8.8.8</code></td>
+            <td><code class="code-cell cmd-mac">ping 8.8.8.8
+ping -c 10 8.8.8.8</code></td>
+            <td class="desc-cell"><strong>ICMP Ping</strong>Tests basic reachability and measures round-trip latency. Windows uses <code>-n</code> for count; macOS/Linux uses <code>-c</code>. On macOS, ping runs indefinitely without <code>-c</code>. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="tracert traceroute trace route path hops mtr pathping">
+            <td><code class="code-cell cmd-win">tracert 8.8.8.8
+pathping 8.8.8.8</code></td>
+            <td><code class="code-cell cmd-mac">traceroute 8.8.8.8
+mtr 8.8.8.8</code></td>
+            <td class="desc-cell"><strong>Trace Network Path</strong><code>traceroute</code> shows each hop to destination. <code>mtr</code> (install via Homebrew: <code>brew install mtr</code>) is superior — combines ping + traceroute with live packet loss stats. <span class="tag tag-tip">INSTALL mtr</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="route print routing table netstat default gateway static routes">
+            <td><code class="code-cell cmd-win">route print
+route print -4</code></td>
+            <td><code class="code-cell cmd-mac">netstat -rn
+route -n get default</code></td>
+            <td class="desc-cell"><strong>View Routing Table</strong>Shows all routing entries. <code>route -n get default</code> quickly shows the default gateway. Add a static route on macOS: <code>sudo route add -net 10.0.0.0/8 192.168.1.1</code>. <span class="tag tag-info">ROUTING</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="nslookup dns lookup resolve hostname dig query nameserver">
+            <td><code class="code-cell cmd-win">nslookup google.com
+nslookup -type=MX domain.com</code></td>
+            <td><code class="code-cell cmd-mac">nslookup google.com
+dig google.com
+dig MX domain.com</code></td>
+            <td class="desc-cell"><strong>DNS Lookup</strong>Resolves hostnames to IPs (and vice versa). <code>dig</code> is more powerful — shows full DNS response with TTL, authoritative server, and record types. Prefer <code>dig</code> for troubleshooting. <span class="tag tag-tip">PREFER dig</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="arp table mac address cache layer 2 resolution">
+            <td><code class="code-cell cmd-win">arp -a
+arp -d 192.168.1.1</code></td>
+            <td><code class="code-cell cmd-mac">arp -a
+sudo arp -d 192.168.1.1</code></td>
+            <td class="desc-cell"><strong>ARP Table</strong>Displays the ARP cache mapping IP → MAC addresses. Use to identify devices on the local segment or diagnose IP conflicts. Delete a stale entry with <code>-d</code>. <span class="tag tag-info">LAYER 2</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="netstat connections ports listening tcp udp sockets active">
+            <td><code class="code-cell cmd-win">netstat -ano
+netstat -anob</code></td>
+            <td><code class="code-cell cmd-mac">netstat -anv
+ss -tulnp
+lsof -i :443</code></td>
+            <td class="desc-cell"><strong>Active Connections &amp; Open Ports</strong>Shows TCP/UDP connections, listening ports, and associated PIDs. <code>lsof -i :PORT</code> is the quickest way to check what's using a specific port on macOS. <span class="tag tag-info">PORTS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="hostname computer name system name">
+            <td><code class="code-cell cmd-win">hostname</code></td>
+            <td><code class="code-cell cmd-mac">hostname
+scutil --get ComputerName</code></td>
+            <td class="desc-cell"><strong>Show Hostname</strong>Returns the machine's hostname. <code>scutil --get ComputerName</code> shows the user-friendly macOS name (may differ from DNS hostname). <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="getmac mac address hardware ethernet physical address interface">
+            <td><code class="code-cell cmd-win">getmac /v
+ipconfig /all</code></td>
+            <td><code class="code-cell cmd-mac">ifconfig en0 | grep ether
+networksetup -getmacaddress en0</code></td>
+            <td class="desc-cell"><strong>Get MAC Address</strong>Shows the hardware MAC address for an interface. Replace <code>en0</code> with the target interface. Useful when whitelisting MACs on switches or wireless controllers. <span class="tag tag-info">LAYER 2</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="telnet nc netcat port test tcp connectivity open closed">
+            <td><code class="code-cell cmd-win">telnet 10.0.0.1 443
+Test-NetConnection 10.0.0.1 -Port 443</code></td>
+            <td><code class="code-cell cmd-mac">nc -vz 10.0.0.1 443
+nc -vz -w 3 10.0.0.1 443</code></td>
+            <td class="desc-cell"><strong>TCP Port Test</strong>Checks if a TCP port is reachable — essential for firewall rule verification. <code>-w 3</code> sets a 3-second timeout. PowerShell's <code>Test-NetConnection</code> also gives latency. <span class="tag tag-tip">FIREWALL TEST</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="curl http https wget download request web api rest">
+            <td><code class="code-cell cmd-win">curl https://example.com
+curl -I https://example.com
+Invoke-WebRequest</code></td>
+            <td><code class="code-cell cmd-mac">curl https://example.com
+curl -I https://example.com
+curl -v https://example.com</code></td>
+            <td class="desc-cell"><strong>HTTP Requests / curl</strong>Fetches URLs, tests APIs, checks HTTP headers. <code>-I</code> for headers only, <code>-v</code> for verbose (shows TLS handshake). Pipe to <code>jq</code> for JSON APIs. Identical on both platforms. <span class="tag tag-info">API TEST</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ssh secure shell remote access login putty terminal">
+            <td><code class="code-cell cmd-win">ssh user@host
+ssh -p 2222 user@host
+ssh -i key.pem user@host</code></td>
+            <td><code class="code-cell cmd-mac">ssh user@host
+ssh -p 2222 user@host
+ssh -i ~/.ssh/key.pem user@host</code></td>
+            <td class="desc-cell"><strong>SSH Remote Login</strong>Connects to remote hosts securely. <code>-p</code> for custom port, <code>-i</code> for key-based auth. Create SSH config at <code>~/.ssh/config</code> for shortcuts to common hosts. <span class="tag tag-info">REMOTE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="net use mount smb share drive map smbfs cifs">
+            <td><code class="code-cell cmd-win">net use Z: \\server\share
+net use * /delete</code></td>
+            <td><code class="code-cell cmd-mac">mount_smbfs //user@server/share /mnt/share
+open smb://server/share</code></td>
+            <td class="desc-cell"><strong>Map SMB Network Share</strong>Mounts Windows/SMB file shares. On macOS, Finder → Go → Connect to Server (<code>⌘K</code>) is often easier. <code>open smb://</code> launches Finder connection dialog. <span class="tag tag-info">FILE SHARE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="tasklist ps aux process list running services pid">
+            <td><code class="code-cell cmd-win">tasklist
+Get-Process
+tasklist /fi "imagename eq nginx.exe"</code></td>
+            <td><code class="code-cell cmd-mac">ps aux
+ps aux | grep nginx
+top / htop</code></td>
+            <td class="desc-cell"><strong>List Running Processes</strong>Shows all running processes with PID and resource usage. Pipe through <code>grep</code> to filter. <code>htop</code> (brew install) is an interactive alternative to <code>top</code>. <span class="tag tag-info">PROCESS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="taskkill kill pkill stop process terminate pid signal">
+            <td><code class="code-cell cmd-win">taskkill /PID 1234 /F
+taskkill /IM nginx.exe /F</code></td>
+            <td><code class="code-cell cmd-mac">kill -9 1234
+pkill nginx
+killall nginx</code></td>
+            <td class="desc-cell"><strong>Kill a Process</strong>Terminates a process by PID or name. <code>kill -9</code> is SIGKILL (force). <code>kill -15</code> is SIGTERM (graceful). Use <code>pkill</code> or <code>killall</code> to kill by name. <span class="tag tag-danger">FORCE KILL</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="systeminfo system_profiler hardware info cpu memory model serial">
+            <td><code class="code-cell cmd-win">systeminfo
+Get-ComputerInfo</code></td>
+            <td><code class="code-cell cmd-mac">system_profiler SPHardwareDataType
+sysctl -n machdep.cpu.brand_string</code></td>
+            <td class="desc-cell"><strong>System Hardware Info</strong>Shows CPU model, RAM, serial number, OS version. <code>sysctl hw.memsize</code> returns total RAM in bytes. Useful for asset tracking and support tickets. <span class="tag tag-info">SYSINFO</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="whoami current user username identity permissions">
+            <td><code class="code-cell cmd-win">whoami
+whoami /groups</code></td>
+            <td><code class="code-cell cmd-mac">whoami
+id
+groups</code></td>
+            <td class="desc-cell"><strong>Current User / Identity</strong>Shows current username. <code>id</code> shows UID, GID, and all group memberships — useful for permission troubleshooting. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="scp sftp file transfer copy remote secure rsync">
+            <td><code class="code-cell cmd-win">scp file.txt user@host:/path/
+pscp (PuTTY)</code></td>
+            <td><code class="code-cell cmd-mac">scp file.txt user@host:/path/
+rsync -avz ./dir user@host:/path/</code></td>
+            <td class="desc-cell"><strong>Secure File Transfer</strong><code>scp</code> copies files over SSH. <code>rsync</code> is better for directory syncs — only transfers changed files. Use <code>-avz</code> for archive mode, verbose, compressed. <span class="tag tag-tip">USE rsync</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="openssl ssl tls certificate check x509 expiry verify">
+            <td><code class="code-cell cmd-win">openssl s_client -connect host:443</code></td>
+            <td><code class="code-cell cmd-mac">openssl s_client -connect host:443
+echo | openssl s_client -connect host:443 2>/dev/null | openssl x509 -noout -dates</code></td>
+            <td class="desc-cell"><strong>SSL/TLS Certificate Check</strong>Inspects TLS certificates. The second command quickly shows cert expiry dates — useful for monitoring cert lifetimes on FortiGate, web servers, and load balancers. <span class="tag tag-tip">CERT CHECK</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── macOS SPECIFIC ─────────────────────────────────────── -->
+  <section class="section s-mac" id="sec-mac">
+    <div class="section-header">
+      <div class="section-badge">🍎</div>
+      <div class="section-title">macOS-Specific Network Commands</div>
+      <span class="section-count">Terminal Pro</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="networksetup listallhardwareports wifi ethernet interface list mac">
+            <td><code class="code-cell cmd-mac">networksetup -listallhardwareports
+networksetup -getinfo "Wi-Fi"
+networksetup -setdnsservers Wi-Fi 1.1.1.1 8.8.8.8</code></td>
+            <td class="desc-cell"><strong>Network Setup Utility</strong>macOS-native tool for managing network interfaces from CLI. Set DNS, toggle DHCP/static, list hardware ports. Scriptable for automation.</td>
+          </tr>
+          <tr class="cmd-row" data-search="scutil dns resolver hostname proxy network configuration">
+            <td><code class="code-cell cmd-mac">scutil --dns
+scutil --proxy
+scutil --get LocalHostName</code></td>
+            <td class="desc-cell"><strong>System Configuration Utility</strong>Query macOS system configuration. <code>--dns</code> shows all DNS resolvers (including VPN split-DNS). <code>--proxy</code> shows active proxy settings. Critical for VPN/FortiClient troubleshooting.</td>
+          </tr>
+          <tr class="cmd-row" data-search="airport wifi ssid bssid channel signal rssi wireless scan">
+            <td><code class="code-cell cmd-mac">alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
+airport -s
+airport -I</code></td>
+            <td class="desc-cell"><strong>Airport Wi-Fi Diagnostics</strong>Hidden macOS tool for Wi-Fi diagnostics. <code>-s</code> scans available networks (SSID, RSSI, security), <code>-I</code> shows current connection details including BSSID, channel, and noise. <span class="tag tag-tip">HIDDEN TOOL</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="launchctl service daemon start stop restart plist">
+            <td><code class="code-cell cmd-mac">sudo launchctl load /Library/LaunchDaemons/com.name.plist
+sudo launchctl unload ...
+launchctl list | grep ssh</code></td>
+            <td class="desc-cell"><strong>Service Management (launchctl)</strong>macOS equivalent of Windows Services / Linux systemctl. Load/unload background daemons. Use to manage VPN agents, monitoring tools, and SSH services.</td>
+          </tr>
+          <tr class="cmd-row" data-search="pfctl firewall pf packet filter rules nat macos firewall">
+            <td><code class="code-cell cmd-mac">sudo pfctl -s rules
+sudo pfctl -sr
+sudo pfctl -e / -d</code></td>
+            <td class="desc-cell"><strong>Packet Filter Firewall (pf)</strong>macOS's built-in firewall (BSD pf). Show current rules, enable/disable. Used when building routing/NATing workflows on Mac. Edit rules in <code>/etc/pf.conf</code>. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="lsof open files network sockets tcp udp connections port process">
+            <td><code class="code-cell cmd-mac">lsof -i
+lsof -i TCP:443
+lsof -i -n -P | grep LISTEN</code></td>
+            <td class="desc-cell"><strong>List Open Files / Sockets</strong>Shows all network connections and listening services. <code>-n</code> skips DNS resolution, <code>-P</code> shows port numbers. Combine with <code>grep LISTEN</code> to find what's bound to a port.</td>
+          </tr>
+          <tr class="cmd-row" data-search="diskutil df du disk space storage volume mount">
+            <td><code class="code-cell cmd-mac">df -h
+du -sh /var/log/*
+diskutil list</code></td>
+            <td class="desc-cell"><strong>Disk / Storage Utilities</strong><code>df -h</code> shows filesystem usage. <code>du -sh</code> shows directory sizes. <code>diskutil list</code> shows all disks and partitions including external. Useful for NAS/storage troubleshooting.</td>
+          </tr>
+          <tr class="cmd-row" data-search="brew homebrew install package manager mtr nmap tcpdump tools">
+            <td><code class="code-cell cmd-mac">brew install mtr nmap tcpdump netcat
+brew install ipcalc sipcalc
+brew install jq yq</code></td>
+            <td class="desc-cell"><strong>Homebrew — Essential Network Tools</strong>Install missing network tools via Homebrew. Key packages: <code>mtr</code> (better traceroute), <code>nmap</code> (port scanner), <code>tcpdump</code>, <code>ipcalc</code> (subnet calc), <code>jq</code> (JSON parsing for API work). <span class="tag tag-tip">MUST INSTALL</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="tcpdump packet capture wireshark filter network traffic interface">
+            <td><code class="code-cell cmd-mac">sudo tcpdump -i en0
+sudo tcpdump -i any host 10.0.0.1
+sudo tcpdump -i en0 port 443 -w capture.pcap</code></td>
+            <td class="desc-cell"><strong>Packet Capture (tcpdump)</strong>Captures live network packets. <code>-w</code> saves to .pcap for analysis in Wireshark. Filter by host, port, or protocol. Replace <code>en0</code> with your interface. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="sudo defaults write plist system preferences terminal admin">
+            <td><code class="code-cell cmd-mac">sudo -i
+sudo -u otheruser command
+sudo visudo</code></td>
+            <td class="desc-cell"><strong>Sudo / Privilege Escalation</strong><code>sudo -i</code> opens a root shell. <code>sudo visudo</code> safely edits sudoers file. On macOS, many network commands require sudo — unlike Windows which prompts UAC.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── NETWORK DIAGNOSTICS ──────────────────────────────────── -->
+  <section class="section s-network" id="sec-network">
+    <div class="section-header">
+      <div class="section-badge">🌐</div>
+      <div class="section-title">Advanced Network Diagnostics</div>
+      <span class="section-count">Deep Dive</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="nmap port scan network discovery service version os detection">
+            <td><code class="code-cell cmd-net">nmap -sV 10.0.0.0/24
+nmap -p 22,80,443 10.0.0.1
+nmap -A -T4 10.0.0.1
+nmap --script=ssl-cert 10.0.0.1</code></td>
+            <td class="desc-cell"><strong>Nmap — Network Scanner</strong>Discovers hosts, open ports, services, and OS fingerprints. <code>-sV</code> detects service versions, <code>-A</code> aggressive scan (OS + scripts), <code>-T4</code> faster timing. Essential for network auditing and firewall rule validation. <span class="tag tag-tip">INSTALL: brew install nmap</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="dig dns query record type a aaaa mx txt srv reverse lookup ptr">
+            <td><code class="code-cell cmd-net">dig google.com A
+dig google.com MX
+dig -x 8.8.8.8
+dig @1.1.1.1 google.com
+dig +short google.com</code></td>
+            <td class="desc-cell"><strong>dig — DNS Query Tool</strong>The go-to DNS troubleshooting tool. <code>-x</code> for reverse lookup, <code>@server</code> to query specific DNS server, <code>+short</code> for clean output. Query specific record types: A, AAAA, MX, TXT, CNAME, NS, SOA. <span class="tag tag-info">DNS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="whois domain registration registrar ip ownership bgp asn">
+            <td><code class="code-cell cmd-net">whois google.com
+whois 8.8.8.8</code></td>
+            <td class="desc-cell"><strong>WHOIS Lookup</strong>Shows domain registration details and IP block ownership. Useful for BGP troubleshooting — confirms ASN and netblock ownership of IPs you're peering with or receiving routes from.</td>
+          </tr>
+          <tr class="cmd-row" data-search="ip route add delete linux routing static route kernel table">
+            <td><code class="code-cell cmd-net">ip route show
+ip route add 10.0.0.0/8 via 192.168.1.1
+ip route del 10.0.0.0/8
+ip route get 8.8.8.8</code></td>
+            <td class="desc-cell"><strong>ip route — Linux/macOS Routing</strong><code>ip route get</code> is incredibly useful — shows exactly which route/interface will be used for a destination. Available on macOS via <code>brew install iproute2mac</code>. <span class="tag tag-info">ROUTING</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ss socket statistics connections netstat replacement linux">
+            <td><code class="code-cell cmd-net">ss -tulnp
+ss -s
+ss -ta state established</code></td>
+            <td class="desc-cell"><strong>ss — Socket Statistics</strong>Modern replacement for <code>netstat</code> on Linux. <code>-t</code> TCP, <code>-u</code> UDP, <code>-l</code> listening, <code>-n</code> numeric, <code>-p</code> show process. Faster and more detailed than netstat. Available on macOS via Homebrew.</td>
+          </tr>
+          <tr class="cmd-row" data-search="iperf3 bandwidth throughput speed test network performance tcp udp">
+            <td><code class="code-cell cmd-net"># Server side:
+iperf3 -s
+# Client side:
+iperf3 -c 10.0.0.1
+iperf3 -c 10.0.0.1 -t 30 -P 4</code></td>
+            <td class="desc-cell"><strong>iperf3 — Bandwidth Testing</strong>Measures actual TCP/UDP throughput between two hosts. Run as server on one side, client on the other. <code>-P 4</code> uses 4 parallel streams. Invaluable for testing DirectConnect, FastConnect, or MPLS circuit throughput. <span class="tag tag-tip">INSTALL: brew install iperf3</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ipcalc subnet calculator cidr mask network broadcast range">
+            <td><code class="code-cell cmd-net">ipcalc 192.168.1.0/24
+ipcalc 10.0.0.0/8 --split 100</code></td>
+            <td class="desc-cell"><strong>ipcalc — Subnet Calculator</strong>Calculates network ranges, broadcast addresses, usable hosts from CIDR notation. <code>--split</code> divides a block into subnets. Use when planning VLAN addressing or checking FortiGate firewall address objects. <span class="tag tag-tip">INSTALL: brew install ipcalc</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="snmp snmpwalk snmpget oid mib monitoring network device">
+            <td><code class="code-cell cmd-net">snmpwalk -v2c -c public 10.0.0.1
+snmpget -v2c -c public 10.0.0.1 sysDescr.0
+snmpwalk -v3 -l authPriv -u user -a SHA -A pass -x AES -X pass host</code></td>
+            <td class="desc-cell"><strong>SNMP Tools</strong>Poll SNMP-enabled devices (switches, FortiGate, routers). <code>snmpwalk</code> traverses MIB tree. <code>snmpget</code> fetches specific OID. Use for quick config verification or when monitoring agents fail. <span class="tag tag-tip">INSTALL: brew install net-snmp</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ssh keygen key pair generate rsa ed25519 public private auth">
+            <td><code class="code-cell cmd-net">ssh-keygen -t ed25519 -C "email@domain.com"
+ssh-keygen -t rsa -b 4096
+ssh-copy-id user@host
+cat ~/.ssh/id_ed25519.pub</code></td>
+            <td class="desc-cell"><strong>SSH Key Management</strong>Generate and deploy SSH key pairs. Prefer <code>ed25519</code> over RSA (shorter, faster, more secure). <code>ssh-copy-id</code> installs your public key on a remote host. Store public keys in <code>~/.ssh/authorized_keys</code>. <span class="tag tag-info">AUTH</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="ssh tunnel port forward socks proxy jump bastion host">
+            <td><code class="code-cell cmd-net"># Local port forward:
+ssh -L 8080:internal-host:80 user@bastion
+# Remote forward:
+ssh -R 9090:localhost:3000 user@server
+# SOCKS proxy:
+ssh -D 1080 user@server</code></td>
+            <td class="desc-cell"><strong>SSH Tunnelling &amp; Port Forwarding</strong>Create encrypted tunnels through SSH. Local forward: access internal services via bastion. SOCKS proxy (<code>-D</code>) routes browser traffic through the server — useful when FortiClient VPN is unavailable. <span class="tag tag-tip">TUNNEL</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── FORTIGATE ─────────────────────────────────────────── -->
+  <section class="section s-fortigate" id="sec-fortigate">
+    <div class="section-header">
+      <div class="section-badge">🔥</div>
+      <div class="section-title">FortiGate CLI Commands</div>
+      <span class="section-count">FortiOS 7.x</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="fortigate get system status version serial firmware build">
+            <td><code class="code-cell cmd-fg">get system status</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>System Status Overview</strong>Shows firmware version, serial number, uptime, HA status, and build info. First command to run when connecting to any FortiGate for the first time or logging a support case. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate diagnose debug flow packet filter trace firewall policy">
+            <td><code class="code-cell cmd-fg">diagnose debug flow filter addr 10.0.0.1
+diagnose debug flow filter daddr 10.0.0.2
+diagnose debug flow show function-name enable
+diagnose debug flow show iprope enable
+diagnose debug enable
+diagnose debug flow trace start 100
+# Stop:
+diagnose debug flow trace stop
+diagnose debug disable</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Flow/Packet Debug Trace</strong>The most powerful FortiGate troubleshooting tool. Traces how the firewall processes packets — shows policy lookup, NAT, routing, and session creation/denial. Filter by source/dest IP. Run <code>trace start 100</code> to capture 100 packets. Always <code>disable</code> when done. <span class="tag tag-danger">PERF IMPACT</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate get router info routing-table routing table bgp ospf static">
+            <td><code class="code-cell cmd-fg">get router info routing-table all
+get router info routing-table database
+get router info routing-table bgp
+get router info routing-table connected</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Routing Table</strong>Shows the active routing table (FIB). <code>all</code> includes all routes; <code>database</code> shows all learned routes before best-path selection; <code>bgp</code> filters to BGP routes only. Essential for BGP/Megaport troubleshooting. <span class="tag tag-info">ROUTING</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate bgp neighbor summary peers status established prefixes megaport mcr">
+            <td><code class="code-cell cmd-fg">get router info bgp summary
+get router info bgp neighbors
+get router info bgp neighbors 10.254.0.5 advertised-routes
+execute router clear bgp ip 10.254.0.1 soft out
+get router info bgp neighbors 169.254.x.x advertised-routes
+get router info bgp neighbors 169.254.x.x received-routes</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>BGP Neighbor Status</strong>Shows BGP peer status, uptime, prefixes sent/received. <code>advertised-routes</code> and <code>received-routes</code> debug prefix exchange with Megaport MCR. Look for state <code>Established</code> and non-zero prefix counts. <span class="tag tag-info">BGP</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate diagnose sniffer packet capture interface filter wireshark host to host between src dst source destination">
+            <td><code class="code-cell cmd-fg"># Single host (any direction):
+diagnose sniffer packet any 'host 10.0.0.1' 4 100
+
+# Host to host (traffic between two specific IPs):
+diagnose sniffer packet any 'host 10.0.0.1 and host 10.0.0.2' 4 100
+
+# Specific interface, host-to-host:
+diagnose sniffer packet port1 'host 10.0.0.1 and host 10.0.0.2' 4 0
+
+# Host-to-host on specific port (e.g. HTTPS):
+diagnose sniffer packet any 'host 10.0.0.1 and host 10.0.0.2 and port 443' 6 0
+
+# One-way: traffic FROM src TO dst:
+diagnose sniffer packet any 'src 10.0.0.1 and dst 10.0.0.2' 4 100
+
+# All traffic on a port across any interface:
+diagnose sniffer packet any 'port 443' 4 0
+
+# Verbose with timestamps (l = line buffer):
+diagnose sniffer packet any 'host 10.0.0.1 and host 10.0.0.2' 6 0 l
+
+# Stop sniffer:
+# Press Ctrl+C</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>Built-in Packet Sniffer</strong>Captures packets directly on FortiGate — tcpdump-style filters.
+<br><br>
+<strong>Verbosity levels:</strong><br>
+<code>1</code> — header only (src/dst IP, port)<br>
+<code>4</code> — header + hex/ASCII data<br>
+<code>6</code> — includes interface name (best for multi-interface troubleshooting)<br>
+<br>
+<strong>Packet count:</strong> <code>0</code> = unlimited (Ctrl+C to stop). Set a number like <code>100</code> to auto-stop.<br>
+<br>
+<strong>Host-to-host tip:</strong> Use <code>and</code> to combine filters — this is the most useful pattern when tracing traffic between two specific endpoints such as a site-to-site VPN peer, a server and its gateway, or two VLAN interfaces.<br>
+<br>
+Add <code>l</code> at the end for timestamps — essential when correlating with FortiAnalyzer logs or comparing with the other side of a tunnel.
+<span class="tag tag-danger">PERF IMPACT</span> <span class="tag tag-tip">CTRL+C TO STOP</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate session list table tcp udp conntrack active connections firewall">
+            <td><code class="code-cell cmd-fg">diagnose sys session list
+diagnose sys session filter src 10.0.0.1
+diagnose sys session filter dst 192.168.1.1
+diagnose sys session filter dport 443
+diagnose sys session stat
+diagnose sys session clear</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Session Table</strong>Shows active firewall sessions (stateful connection tracking). Filter by source, destination, port, or protocol. <code>stat</code> shows session counts. <code>clear</code> flushes all sessions — use with caution in production. <span class="tag tag-danger">CLEAR = CAUTION</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate ha high availability cluster status sync heartbeat failover">
+            <td><code class="code-cell cmd-fg">get system ha status
+diagnose sys ha status
+diagnose sys ha checksum show
+execute ha failover set 1
+execute ha failover unset</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>High Availability Status</strong>Check HA cluster health, sync status, and which unit is primary. <code>checksum show</code> compares config between HA members (mismatch = sync issue). <code>failover set 1</code> forces a failover — test or use during maintenance. <span class="tag tag-danger">FAILOVER = OUTAGE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate ipsec vpn tunnel status phase1 phase2 dialup">
+            <td><code class="code-cell cmd-fg">get vpn ipsec tunnel summary
+get vpn ipsec tunnel details
+diagnose vpn tunnel list
+diagnose vpn ike log-filter dst-addr4 10.0.0.1
+diagnose debug app ike -1
+diagnose debug enable</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>IPsec VPN Tunnel Status</strong><code>tunnel summary</code> shows all tunnels and SA state. <code>ike log-filter</code> + debug IKE is used to troubleshoot phase1/2 failures. Look for <code>established</code> status. Check selectors, PSK, and encryption mismatches when tunnels are down. <span class="tag tag-info">VPN</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate interface status link speed duplex ip">
+            <td><code class="code-cell cmd-fg">get system interface physical
+get system interface transceiver
+diagnose netlink interface list
+diagnose hardware deviceinfo nic port1</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>Interface / Hardware Status</strong>Shows physical interface states, link speed, duplex, and hardware stats. <code>transceiver</code> shows SFP optical power levels. <code>deviceinfo nic</code> gives detailed driver stats including errors and drops — essential for diagnosing CRC errors or flapping links.</td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate cpu memory usage resource performance diagnose">
+            <td><code class="code-cell cmd-fg">get system performance status
+diagnose sys top
+diagnose sys top-mem
+diagnose hardware sysinfo memory
+diagnose sys process pidof ipsengine</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>CPU &amp; Memory Performance</strong><code>performance status</code> gives a quick summary. <code>sys top</code> is like Linux top — shows per-process CPU. High <code>ipsengine</code> or <code>scanunitd</code> CPU often indicates deep inspection load. Check during slowness events. <span class="tag tag-info">PERFORMANCE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate policy lookup route lookup address firewall rule match">
+            <td><code class="code-cell cmd-fg">diagnose firewall iprope lookup 10.0.0.1 10.0.0.2 6 1024 443</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Policy Lookup (iprope)</strong>Simulates a packet and shows which firewall policy would match. Arguments: src-ip dst-ip proto src-port dst-port. Proto 6=TCP, 17=UDP, 1=ICMP. Useful to verify policy ordering without generating real traffic. <span class="tag tag-tip">POLICY TEST</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate sd-wan sdwan rule status health check member interface">
+            <td><code class="code-cell cmd-fg">diagnose sys virtual-wan-link health-check
+diagnose sys virtual-wan-link member
+diagnose sys virtual-wan-link service
+get router info virtual-wan-link</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>SD-WAN Status &amp; Diagnostics</strong>Shows SD-WAN member status, health-check results (latency, jitter, packet loss), and which service rule is being used. <code>member</code> shows bandwidth and preference. Essential when traffic isn't taking expected SD-WAN path. <span class="tag tag-info">SD-WAN</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate execute backup config restore tftp usb ftp">
+            <td><code class="code-cell cmd-fg">execute backup config ftp backup.conf 10.0.0.1
+execute backup config tftp backup.conf 10.0.0.1
+execute restore config ftp backup.conf 10.0.0.1</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>Backup &amp; Restore Config</strong>Back up config to FTP/TFTP server. Always backup before changes. Restore from saved config for rollback. Also available via GUI (System → Config → Backup). Keep versioned backups before major changes. <span class="tag tag-admin">BACKUP FIRST</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate config vdom context enter global root">
+            <td><code class="code-cell cmd-fg"># Enter VDOM context:
+config vdom
+edit root
+end
+
+# Switch to global:
+config global
+
+# Check current context:
+get vdom-list</code>
+            <div class="fg-mode">GLOBAL/VDOM</div></td>
+            <td class="desc-cell"><strong>VDOM Context Switching</strong>When VDOMs are enabled, most commands run in current VDOM context. Use <code>config vdom → edit root</code> to enter a specific VDOM. <code>config global</code> for global settings. Important — running commands in wrong VDOM gives empty results. <span class="tag tag-info">VDOM</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate log traffic event system local logview">
+            <td><code class="code-cell cmd-fg">execute log filter category traffic
+execute log filter device memory
+execute log display
+execute log filter reset
+diagnose log test</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Local Log Viewer</strong>View logs stored in FortiGate memory. Filter by category (traffic, event, system). <code>diagnose log test</code> sends a test log entry. Most production environments send logs to FortiAnalyzer — use these when FAZ is unavailable. <span class="tag tag-info">LOGS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="fortigate dns server lookup resolve nslookup">
+            <td><code class="code-cell cmd-fg">diagnose test application dnsproxy 1
+execute nslookup name google.com
+execute nslookup name google.com 8.8.8.8</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>DNS Diagnostics</strong><code>nslookup name</code> performs a DNS lookup from the FortiGate itself — useful to verify DNS resolution from the firewall's perspective vs. a client. <code>dnsproxy 1</code> shows DNS proxy stats and cache. <span class="tag tag-info">DNS</span></td>
+          </tr>
+
+          <!-- ── ADDITIONAL FORTIGATE COMMANDS ── -->
+          <tr class="cmd-row" data-search="fortigate fortimanager fmg device list registration status tunnel fgfm">
+            <td><code class="code-cell cmd-fg">diagnose fgfm session-list
+diagnose fgfm session list
+get system management-tunnel-info
+diagnose debug application fgfmd -1
+diagnose debug enable</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>FortiManager Tunnel &amp; Registration</strong>Shows FGFM management tunnel sessions. Use when a FortiGate fails to register in FortiManager or the FGFM tunnel drops. <code>fgfmd -1</code> debug shows negotiation detail — look for certificate errors or connectivity failures. <span class="tag tag-admin">FGFM</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate certificate ssl tls verify pki inspect ca">
+            <td><code class="code-cell cmd-fg">get vpn certificate local
+get vpn certificate ca
+diagnose vpn certificate list
+diagnose debug app httpsd -1
+diagnose debug enable</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>Certificate &amp; PKI Management</strong>Lists local and CA certificates. Use when HTTPS inspection, FGFM registration, or SSL-VPN shows certificate errors. Check expiry dates regularly — expired certs silently break FGFM tunnels. <span class="tag tag-info">CERT</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate ospf neighbor adjacency area route redistribution">
+            <td><code class="code-cell cmd-fg">get router info ospf neighbor
+get router info ospf status
+get router info ospf database
+diagnose ip router ospf all enable
+diagnose ip router ospf level info
+diagnose debug enable</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>OSPF Neighbor &amp; Status</strong>Shows OSPF adjacencies, area membership, and database. <code>ospf all enable</code> enables verbose OSPF debug — watch for DR/BDR elections, hello mismatches, and dead timer expiry. Disable debug when done. <span class="tag tag-info">OSPF</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate ssl vpn sslvpn tunnel mode web mode user session">
+            <td><code class="code-cell cmd-fg">diagnose vpn ssl list
+diagnose vpn ssl statistics
+diagnose vpn ssl tunnel list
+diagnose vpn ssl user list
+diagnose debug app sslvpn -1
+diagnose debug enable</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>SSL-VPN Session Status</strong>Lists active SSL-VPN sessions, connected users, and tunnel stats. <code>sslvpn -1</code> debug captures handshake and authentication failures — useful when users can't connect. Check realms, portals, and firewall policies when troubleshooting. <span class="tag tag-info">SSL-VPN</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate forticlient ems zero trust ztna endpoint registration">
+            <td><code class="code-cell cmd-fg">diagnose endpoint registration list
+diagnose endpoint compliance summary
+diagnose endpoint record list
+get endpoint control registered-forticlient</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>FortiClient / EMS Endpoint Status</strong>Lists registered FortiClient endpoints, compliance posture, and EMS connection status. Use to confirm ZTNA posture checks are passing and endpoint licenses are consumed correctly. <span class="tag tag-info">EMS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate policy routing policy-based route pbr order lookup">
+            <td><code class="code-cell cmd-fg">get router info routing-table details 10.0.0.1
+get router info kernel
+diagnose firewall proute list
+config router policy
+  show</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Policy-Based Routing (PBR)</strong>Lists policy routes (PBR) which override standard routing table decisions. <code>proute list</code> shows active PBR rules. <code>routing-table details</code> shows full recursive lookup for a specific destination — vital when SD-WAN or PBR is misdirecting traffic. <span class="tag tag-info">PBR</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate npu hardware offload session traffic acceleration">
+            <td><code class="code-cell cmd-fg">diagnose npu np6 session-stats
+diagnose npu np6 port-list
+diagnose npu np6xlite session-stats
+diagnose hardware npu np6 drop-stats</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>NPU Hardware Offload Stats</strong>Shows NPU (NP6/NP7) session offload counters and drop statistics. When throughput drops unexpectedly, check NPU drop-stats for errors. Traffic not offloaded by NPU falls to CPU — explaining high CPU during large transfers. <span class="tag tag-info">NPU</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate fortianalyzer faz log forwarding send status">
+            <td><code class="code-cell cmd-fg">diagnose log fortianalyzer list
+diagnose log fortianalyzer test-connectivity
+diagnose test application miglogd 4
+diagnose debug app miglogd -1
+diagnose debug enable</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>FortiAnalyzer Log Forwarding</strong>Checks FAZ connectivity and log send status. <code>test-connectivity</code> confirms the FAZ is reachable. <code>miglogd -1</code> debug shows forwarding queue and any send failures — run when logs stop appearing in FortiAnalyzer. <span class="tag tag-info">FAZ</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate web filter category profile utm profile inspect">
+            <td><code class="code-cell cmd-fg">diagnose webfilter fortiguard category list
+diagnose debug app urlfilter -1
+diagnose debug enable
+# Check if a URL is categorised:
+diagnose webfilter fortiguard lookup http://www.example.com</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Web Filter / UTM Diagnostics</strong>Looks up FortiGuard URL category for a specific URL. Use when a site is blocked unexpectedly. <code>urlfilter -1</code> shows real-time filtering decisions — identify overrides needed in web filter profile. <span class="tag tag-info">WEB FILTER</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate antivirus av ips intrusion prevention signature update">
+            <td><code class="code-cell cmd-fg">diagnose autoupdate status
+diagnose autoupdate versions
+execute update-now
+diagnose debug app update -1
+diagnose debug enable</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>FortiGuard Update Status</strong>Shows AV, IPS, and application control signature versions and last update time. <code>update-now</code> forces an immediate update. Run when IPS signatures appear stale or after blocking access to the internet during maintenance. <span class="tag tag-info">FORTIGUARD</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate execute ping tcpdump traceroute from vdom interface source">
+            <td><code class="code-cell cmd-fg"># Ping from FortiGate with source IP:
+execute ping-options source 10.0.0.1
+execute ping 8.8.8.8
+
+# Ping with repeat count:
+execute ping-options repeat-count 10
+execute ping-options data-size 1400
+execute ping 10.0.0.1
+
+# Traceroute:
+execute traceroute 8.8.8.8</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Execute Ping &amp; Traceroute</strong>Ping from the FortiGate itself with a specific source IP — critical for asymmetric routing tests. Setting the source ensures the ping leaves the correct interface. Use <code>data-size 1400</code> to test MTU/fragmentation. <span class="tag tag-tip">SOURCE IP</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate config cli edit show get full-configuration tree list object">
+            <td><code class="code-cell cmd-fg"># Show specific object:
+show firewall policy 10
+
+# Show with all defaults:
+show full-configuration firewall policy
+
+# Find all references to an address object:
+diagnose sys checkused firewall.address:my-object
+
+# List all address objects:
+config firewall address
+  show
+end</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>CLI Config Navigation</strong><code>show</code> outputs only non-default config. <code>show full-configuration</code> includes defaults — useful for comparison. <code>diagnose sys checkused</code> finds all policies/objects referencing a named object before deleting it — prevents orphaned references. <span class="tag tag-tip">SAFE DELETE</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate radius authentication ldap user group two factor 2fa">
+            <td><code class="code-cell cmd-fg"># Test RADIUS server:
+diagnose test authserver radius &lt;server-name&gt; pap user pass
+
+# Test LDAP server:
+diagnose test authserver ldap &lt;server-name&gt; user pass
+
+# List authenticated users:
+diagnose firewall auth list
+
+# Clear a user's auth session:
+diagnose firewall auth clear</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>Authentication Server Testing</strong>Tests RADIUS/LDAP connectivity and credentials directly from the CLI without needing a client. Use when users can't authenticate through captive portal or VPN. <code>auth list</code> shows currently authenticated firewall users and expiry. <span class="tag tag-admin">AUTH</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate virtual ip vip nat dnat port forward mapping">
+            <td><code class="code-cell cmd-fg">show firewall vip
+get firewall vip
+# Check VIP is in policy:
+diagnose firewall iprope lookup &lt;ext-ip&gt; &lt;dst-ip&gt; 6 1024 80
+# Check NAT translation session:
+diagnose sys session filter dport 80
+diagnose sys session list</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>VIP / DNAT Troubleshooting</strong>Lists Virtual IPs (destination NAT/port forward rules). Combine with <code>iprope lookup</code> to confirm the VIP is matched by a policy. Session filter confirms translation is occurring. Common issue: VIP exists but no firewall policy uses it. <span class="tag tag-info">NAT</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate ipam address pool dhcp lease ip pool exhaustion">
+            <td><code class="code-cell cmd-fg">get system dhcp server
+diagnose sys dhcp server list
+diagnose sys dhcp server status 1
+# Show DHCP leases:
+diagnose sys dhcp lease list
+diagnose sys dhcp lease clear</code>
+            <div class="fg-mode">VDOM</div></td>
+            <td class="desc-cell"><strong>DHCP Server Status &amp; Leases</strong>Shows DHCP server configuration and active lease table. <code>server status 1</code> (use server ID) shows lease utilisation — if pool is exhausted, clients will fail to get IPs. <code>lease clear</code> forces all clients to renew. <span class="tag tag-info">DHCP</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="fortigate conserve mode memory low resource limit process kill">
+            <td><code class="code-cell cmd-fg">get system performance status
+diagnose hardware sysinfo memory
+# If in conserve mode:
+diagnose sys process dump &lt;pid&gt;
+diagnose sys kill 11 &lt;pid&gt;
+# Check what's consuming memory:
+diagnose sys top-mem</code>
+            <div class="fg-mode">GLOBAL</div></td>
+            <td class="desc-cell"><strong>Memory Conserve Mode</strong>When FortiGate enters conserve mode (memory &gt;90%), new sessions may be dropped and features disabled. <code>top-mem</code> identifies top memory consumers. In emergencies, <code>sys kill 11</code> sends SIGSEGV to a process — triggers a restart but restores memory. <span class="tag tag-danger">CONSERVE MODE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── LINUX / SHELL ─────────────────────────────────────── -->
+  <section class="section s-linux" id="sec-linux">
+    <div class="section-header">
+      <div class="section-badge">🐧</div>
+      <div class="section-title">Linux / Shell Commands</div>
+      <span class="section-count">Ubuntu · Debian · RHEL</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+
+          <!-- ── SYSTEM INFO ── -->
+          <tr class="cmd-row" data-search="linux system info uname kernel version os release distribution hostname">
+            <td><code class="code-cell cmd-lx">uname -a
+cat /etc/os-release
+hostnamectl
+lsb_release -a</code></td>
+            <td class="desc-cell"><strong>System &amp; OS Information</strong>Shows kernel version, architecture, and OS distribution details. <code>hostnamectl</code> (systemd) gives a full summary including chassis type. Run first when SSHing into an unknown machine. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux uptime load average who logged in users running time">
+            <td><code class="code-cell cmd-lx">uptime
+w
+who
+last -n 20</code></td>
+            <td class="desc-cell"><strong>Uptime &amp; Logged-in Users</strong><code>uptime</code> shows load averages (1/5/15 min). <code>w</code> shows active sessions with idle times. <code>last</code> shows login history — use to audit who has connected and when. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux cpu memory ram usage top htop free disk">
+            <td><code class="code-cell cmd-lx">top
+htop
+free -h
+vmstat 1 5
+nproc
+lscpu</code></td>
+            <td class="desc-cell"><strong>CPU &amp; Memory Usage</strong><code>htop</code> is the friendlier interactive version of top (install via apt/yum). <code>free -h</code> shows RAM/swap in human-readable units. <code>vmstat 1 5</code> samples every 1s for 5 iterations — reveals CPU steal (virtualisation pressure). <span class="tag tag-info">PERFORMANCE</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux disk usage space df du filesystem mount inode">
+            <td><code class="code-cell cmd-lx">df -h
+df -i
+du -sh /var/log/*
+du -sh /* 2>/dev/null | sort -rh | head -20
+lsblk
+lsblk -f</code></td>
+            <td class="desc-cell"><strong>Disk Usage &amp; Filesystems</strong><code>df -h</code> shows mounted filesystem usage. <code>df -i</code> checks inode exhaustion (full inodes = no new files even with space). <code>du -sh /* | sort -rh</code> finds the largest directories quickly. <code>lsblk -f</code> shows filesystems on each block device. <span class="tag tag-info">DISK</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux process list ps aux kill pkill signal daemon service">
+            <td><code class="code-cell cmd-lx">ps aux
+ps aux | grep nginx
+kill -9 1234
+pkill -f process-name
+pgrep -l nginx
+pstree -p</code></td>
+            <td class="desc-cell"><strong>Process Management</strong><code>ps aux</code> lists all processes with CPU/memory. <code>pgrep</code> finds PID by name. <code>kill -9</code> is a forced kill (SIGKILL) — use <code>kill -15</code> (SIGTERM) first to allow graceful shutdown. <code>pstree</code> shows parent-child relationships. <span class="tag tag-tip">SIGTERM FIRST</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux systemd service start stop restart status enable disable daemon">
+            <td><code class="code-cell cmd-lx">systemctl status nginx
+systemctl start nginx
+systemctl stop nginx
+systemctl restart nginx
+systemctl reload nginx
+systemctl enable nginx
+systemctl disable nginx
+systemctl list-units --type=service --state=running</code></td>
+            <td class="desc-cell"><strong>Systemd Service Management</strong>The standard way to manage services on modern Linux. <code>reload</code> sends SIGHUP (reloads config without restart). <code>enable</code> sets service to start on boot. <code>list-units</code> shows all running services — useful for auditing what's running. <span class="tag tag-admin">SYSTEMD</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux journalctl logs systemd journal service log tail follow">
+            <td><code class="code-cell cmd-lx">journalctl -u nginx
+journalctl -u nginx -f
+journalctl -u nginx --since "1 hour ago"
+journalctl -p err -xb
+journalctl --disk-usage
+journalctl --vacuum-size=500M</code></td>
+            <td class="desc-cell"><strong>Systemd Journal Logs</strong><code>-f</code> tails the log live. <code>-p err</code> filters to errors only. <code>-xb</code> adds context and shows current boot only. Journal can fill /var — <code>--vacuum-size</code> trims it to a limit. Essential when services fail to start. <span class="tag tag-info">LOGS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux network interface ip addr link route show ifconfig nmcli">
+            <td><code class="code-cell cmd-lx">ip addr show
+ip link show
+ip link set eth0 up
+ip addr add 192.168.1.10/24 dev eth0
+ip route show
+ip route add 10.0.0.0/8 via 192.168.1.1
+ip route del 10.0.0.0/8
+ip neigh show</code></td>
+            <td class="desc-cell"><strong>Network Interface &amp; Routing (iproute2)</strong>The modern replacement for <code>ifconfig</code>/<code>route</code>. <code>ip neigh</code> replaces <code>arp -a</code>. Routes added this way are not persistent — write them to <code>/etc/netplan/</code> (Ubuntu) or <code>nmcli</code> for permanence. <span class="tag tag-info">NETWORKING</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux netplan network configuration persistent interface ubuntu yaml apply">
+            <td><code class="code-cell cmd-lx"># Edit:
+sudo nano /etc/netplan/00-installer-config.yaml
+# Apply:
+sudo netplan apply
+sudo netplan try
+# Test and auto-rollback after 120s:
+sudo netplan try --timeout 120</code></td>
+            <td class="desc-cell"><strong>Netplan (Ubuntu 18.04+)</strong>Ubuntu's network configuration system. <code>netplan try</code> applies config and auto-reverts if you don't confirm within timeout — invaluable when changing IP remotely (avoids lockout). Always use <code>try</code> before <code>apply</code> on production servers. <span class="tag tag-admin">NETPLAN</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux ss netstat socket ports listening tcp udp connections established">
+            <td><code class="code-cell cmd-lx">ss -tulnp
+ss -tulnp | grep :22
+ss -s
+ss -tp state established
+netstat -tulnp
+lsof -i :443
+lsof -i TCP -sTCP:LISTEN</code></td>
+            <td class="desc-cell"><strong>Sockets &amp; Listening Ports</strong><code>ss</code> is the modern replacement for <code>netstat</code>. <code>-tulnp</code>: TCP+UDP, listening, numeric, show PID. <code>ss -s</code> shows a summary of connection states. <code>lsof -i :443</code> shows exactly which process owns a port. <span class="tag tag-info">PORTS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux firewall iptables nftables ufw rules list allow deny drop">
+            <td><code class="code-cell cmd-lx"># UFW (Ubuntu):
+sudo ufw status verbose
+sudo ufw allow 22/tcp
+sudo ufw deny 80/tcp
+sudo ufw enable
+
+# iptables:
+sudo iptables -L -n -v
+sudo iptables -L INPUT -n --line-numbers
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+sudo iptables-save > /etc/iptables/rules.v4</code></td>
+            <td class="desc-cell"><strong>Host Firewall — UFW &amp; iptables</strong>UFW is the user-friendly frontend for iptables on Ubuntu. Always check UFW status before blaming network firewalls when connectivity fails. <code>iptables -L -v</code> shows packet/byte hit counts — a rule with 0 hits has never matched. <span class="tag tag-admin">FIREWALL</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux tcpdump packet capture filter interface wireshark pcap network trace">
+            <td><code class="code-cell cmd-lx"># Basic capture on interface:
+sudo tcpdump -i eth0 -n
+
+# Host to host:
+sudo tcpdump -i any 'host 10.0.0.1 and host 10.0.0.2'
+
+# Port filter:
+sudo tcpdump -i eth0 'port 443' -w /tmp/cap.pcap
+
+# Read a pcap:
+tcpdump -r /tmp/cap.pcap -nn
+
+# Without DNS resolution, with timestamps:
+sudo tcpdump -i any -nn -tttt 'src 10.0.0.1 and dst port 80' -c 200</code></td>
+            <td class="desc-cell"><strong>tcpdump — Packet Capture</strong>The Linux equivalent of FortiGate's sniffer. <code>-w</code> saves to pcap for Wireshark analysis. <code>-nn</code> disables DNS and port name resolution (faster, cleaner output). Always specify <code>-c N</code> packet count or Ctrl+C to stop. <span class="tag tag-danger">PERF IMPACT</span> <span class="tag tag-tip">CTRL+C TO STOP</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux file permissions chmod chown owner group read write execute octal">
+            <td><code class="code-cell cmd-lx">ls -la /etc/nginx/
+chmod 644 file.conf
+chmod 755 /opt/script.sh
+chown www-data:www-data /var/www/html
+chmod -R 750 /opt/app/
+# Find files with wrong permissions:
+find /etc -type f -perm 0777 2>/dev/null</code></td>
+            <td class="desc-cell"><strong>File Permissions &amp; Ownership</strong>Octal shorthand: 7=rwx, 6=rw-, 5=r-x, 4=r--. Config files typically 644; scripts 755; private keys 600. <code>find -perm 0777</code> audits world-writable files — a common security misconfiguration on servers. <span class="tag tag-info">PERMISSIONS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux find locate files search filename content grep recursive">
+            <td><code class="code-cell cmd-lx"># Find files by name:
+find /etc -name "*.conf" -type f
+
+# Find modified in last 24h:
+find /var/log -mtime -1 -type f
+
+# Find and grep:
+find /etc -name "*.conf" | xargs grep -l "Listen 80"
+
+# Grep recursively:
+grep -r "error" /var/log/ --include="*.log"
+grep -rn "192.168.1.1" /etc/</code></td>
+            <td class="desc-cell"><strong>Find &amp; Search Files</strong><code>find</code> is essential for locating config files, recently changed files, and large files. Pipe to <code>xargs grep</code> to search content across many files at once. <code>-rn</code> on grep gives line numbers — makes fixing config issues much faster. <span class="tag tag-info">SEARCH</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux tail head cat less log view follow real time">
+            <td><code class="code-cell cmd-lx">tail -f /var/log/syslog
+tail -f /var/log/nginx/error.log
+tail -100 /var/log/auth.log
+head -50 /etc/nginx/nginx.conf
+cat /var/log/syslog | grep -i error
+less +G /var/log/syslog</code></td>
+            <td class="desc-cell"><strong>Log Viewing</strong><code>tail -f</code> follows logs in real time — the most common way to monitor services. <code>less +G</code> opens at the end of the file. Combine with <code>grep -i error</code> to cut through noise. Check <code>/var/log/auth.log</code> for SSH login failures. <span class="tag tag-info">LOGS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux package install apt apt-get yum dnf upgrade update software">
+            <td><code class="code-cell cmd-lx"># Debian / Ubuntu:
+sudo apt update
+sudo apt upgrade -y
+sudo apt install nginx
+sudo apt remove nginx
+sudo apt autoremove
+dpkg -l | grep nginx
+dpkg -L nginx
+
+# RHEL / CentOS / Rocky:
+sudo dnf update -y
+sudo dnf install nginx
+rpm -qa | grep nginx</code></td>
+            <td class="desc-cell"><strong>Package Management</strong>Always run <code>apt update</code> before installing to refresh the package index. <code>dpkg -L</code> lists files installed by a package — useful when you need to find where a binary or config was placed. Use <code>autoremove</code> to clean orphaned dependencies. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux cron crontab schedule job task timer periodic run">
+            <td><code class="code-cell cmd-lx">crontab -l
+crontab -e
+sudo crontab -l
+cat /etc/crontab
+ls /etc/cron.d/
+# Syntax: min hour dom month dow command
+# Example - run at 2am daily:
+0 2 * * * /opt/backup.sh >> /var/log/backup.log 2>&amp;1</code></td>
+            <td class="desc-cell"><strong>Cron / Scheduled Tasks</strong><code>crontab -l</code> lists the current user's cron jobs. System-wide jobs live in <code>/etc/cron.d/</code>. Always redirect output to a log file — silent crons hide errors for months. Use <code>systemd timers</code> as a modern alternative with better logging. <span class="tag tag-info">SCHEDULING</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux disk io iostat iotop performance block device storage slow">
+            <td><code class="code-cell cmd-lx">iostat -xz 1 5
+iotop -o
+iotop -oa
+# Check specific disk:
+iostat -d sda 1 10
+# Disk read/write speed test:
+dd if=/dev/zero of=/tmp/test bs=1M count=1024 oflag=direct
+rm /tmp/test</code></td>
+            <td class="desc-cell"><strong>Disk I/O Performance</strong><code>iostat -xz</code> shows per-device utilisation, await (latency), and queue depth. <code>iotop -o</code> shows only processes with active I/O. High <code>await</code> (>20ms for SSD, >10ms for NVMe) indicates storage bottleneck. The <code>dd</code> test gives raw sequential write speed. <span class="tag tag-info">DISK IO</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux ssh scp rsync copy file remote secure transfer sync">
+            <td><code class="code-cell cmd-lx"># SCP copy to remote:
+scp file.txt user@10.0.0.1:/tmp/
+
+# SCP copy from remote:
+scp user@10.0.0.1:/etc/nginx/nginx.conf ./
+
+# Rsync (preferred over scp):
+rsync -avz /local/dir/ user@host:/remote/dir/
+rsync -avz --progress --delete /src/ /dst/
+
+# SSH config shortcut (in ~/.ssh/config):
+Host myserver
+  HostName 10.0.0.1
+  User ubuntu
+  IdentityFile ~/.ssh/id_ed25519</code></td>
+            <td class="desc-cell"><strong>SCP / Rsync File Transfer</strong><code>rsync</code> is far better than SCP for directory transfers — it's resumable, shows progress, and only transfers changed files. <code>--delete</code> removes files on destination not in source (mirror mode). The <code>~/.ssh/config</code> shortcut saves typing on daily-used servers. <span class="tag tag-tip">USE RSYNC</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux users add create delete passwd sudo group wheel adduser">
+            <td><code class="code-cell cmd-lx">sudo adduser wasim
+sudo usermod -aG sudo wasim
+sudo usermod -aG docker wasim
+id wasim
+sudo passwd wasim
+sudo userdel -r wasim
+getent passwd
+getent group sudo</code></td>
+            <td class="desc-cell"><strong>User Management</strong><code>adduser</code> (interactive) vs <code>useradd</code> (low-level, no home dir by default). <code>-aG</code> appends a group without removing others — missing the <code>-a</code> removes all existing group memberships. <code>getent group sudo</code> lists all sudoers. <span class="tag tag-admin">USER ADMIN</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux sudo visudo permissions sudoers privilege escalation access">
+            <td><code class="code-cell cmd-lx">sudo visudo
+cat /etc/sudoers
+sudo -l
+sudo -l -U wasim
+# Grant sudo without password:
+# wasim ALL=(ALL) NOPASSWD:ALL
+# Grant specific command only:
+# wasim ALL=(ALL) NOPASSWD:/usr/bin/systemctl</code></td>
+            <td class="desc-cell"><strong>Sudo &amp; Privilege Management</strong>Always edit <code>/etc/sudoers</code> via <code>visudo</code> — it validates syntax before saving (a bad sudoers file locks everyone out). <code>sudo -l -U user</code> audits what a specific user can run as sudo without needing their password. <span class="tag tag-admin">SUDO</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux ssh sshd config hardening port publickey authentication login">
+            <td><code class="code-cell cmd-lx">sudo nano /etc/ssh/sshd_config
+# Key settings:
+# Port 2222
+# PermitRootLogin no
+# PasswordAuthentication no
+# PubkeyAuthentication yes
+# AllowUsers wasim
+
+sudo systemctl restart sshd
+sudo sshd -t  # Test config before restart</code></td>
+            <td class="desc-cell"><strong>SSH Server Hardening</strong>Disable root login and password auth after deploying SSH keys. <code>sshd -t</code> validates the config file without restarting — always run this before a restart or you may lock yourself out. <code>AllowUsers</code> is an allowlist — only listed users can SSH in. <span class="tag tag-danger">LOCKOUT RISK</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux environment variables export path profile bashrc bash_profile shell">
+            <td><code class="code-cell cmd-lx">env
+printenv PATH
+export MY_VAR=value
+echo $MY_VAR
+
+# Persistent (add to ~/.bashrc or ~/.bash_profile):
+echo 'export PATH=$PATH:/opt/bin' >> ~/.bashrc
+source ~/.bashrc
+
+# System-wide:
+sudo nano /etc/environment</code></td>
+            <td class="desc-cell"><strong>Environment Variables</strong><code>export</code> makes a variable available to child processes. Without it, the var exists only in the current shell. <code>source ~/.bashrc</code> reloads without opening a new shell. System-wide variables go in <code>/etc/environment</code>. <span class="tag tag-info">SHELL</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux archive compress tar gzip zip unzip extract">
+            <td><code class="code-cell cmd-lx"># Create tar.gz:
+tar -czf archive.tar.gz /path/to/dir/
+
+# Extract tar.gz:
+tar -xzf archive.tar.gz
+
+# Extract to specific directory:
+tar -xzf archive.tar.gz -C /opt/
+
+# List contents without extracting:
+tar -tzf archive.tar.gz
+
+# Zip / unzip:
+zip -r archive.zip /path/
+unzip archive.zip -d /opt/</code></td>
+            <td class="desc-cell"><strong>Archive &amp; Compression</strong>Mnemonic for tar flags: <strong>c</strong>reate, e<strong>x</strong>tract, <strong>z</strong>gzip, <strong>f</strong>ile. <code>-v</code> adds verbose output (shows each file). Always extract to a target directory (<code>-C</code>) to avoid dumping files into the current directory. <span class="tag tag-info">FILES</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux curl wget http https api test download header response">
+            <td><code class="code-cell cmd-lx"># Basic request:
+curl -I https://example.com
+
+# POST with JSON:
+curl -X POST https://api.example.com/v1/data \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TOKEN" \
+  -d '{"key":"value"}'
+
+# Follow redirects, show timing:
+curl -Lv --write-out "\nTime: %{time_total}s\n" https://example.com
+
+# Download file:
+wget -O /tmp/file.tar.gz https://example.com/file.tar.gz</code></td>
+            <td class="desc-cell"><strong>curl / wget</strong><code>-I</code> fetches headers only (no body). <code>-v</code> verbose shows TLS handshake and redirect chain — use when debugging HTTPS. <code>--write-out</code> can output connection timing, HTTP status code, and more. Essential for API testing from servers. <span class="tag tag-info">HTTP</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux lvm logical volume group extend resize pv vg lv">
+            <td><code class="code-cell cmd-lx"># Show LVM structure:
+pvs && vgs && lvs
+lvdisplay
+vgdisplay
+
+# Extend a logical volume and filesystem:
+sudo lvextend -L +20G /dev/mapper/ubuntu--vg-ubuntu--lv
+sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+
+# For XFS (RHEL/Rocky):
+sudo xfs_growfs /mountpoint</code></td>
+            <td class="desc-cell"><strong>LVM — Extend Logical Volume</strong>Common task on Proxmox/Hyper-V Linux VMs after expanding the disk in the hypervisor. Extend the PV first if needed (<code>pvresize</code>), then <code>lvextend</code>, then resize the filesystem. <code>resize2fs</code> for ext4, <code>xfs_growfs</code> for XFS — online (no unmount needed). <span class="tag tag-admin">LVM</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux systemd-resolve resolvectl dns nameserver resolver ubuntu configuration">
+            <td><code class="code-cell cmd-lx">resolvectl status
+resolvectl query google.com
+cat /etc/resolv.conf
+systemd-resolve --status
+# Flush DNS cache:
+sudo resolvectl flush-caches
+# Override DNS for interface:
+sudo resolvectl dns eth0 1.1.1.1 8.8.8.8
+sudo resolvectl domain eth0 ~.</code></td>
+            <td class="desc-cell"><strong>DNS Resolution (systemd-resolved)</strong>Modern Ubuntu uses <code>systemd-resolved</code>. <code>resolvectl status</code> shows DNS servers per interface — important when different VLANs need different DNS servers. <code>flush-caches</code> is the Linux equivalent of Windows' <code>ipconfig /flushdns</code>. <span class="tag tag-info">DNS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux docker container image pull run exec stop logs ps inspect">
+            <td><code class="code-cell cmd-lx">docker ps -a
+docker images
+docker logs -f container_name
+docker exec -it container_name bash
+docker inspect container_name
+docker stats --no-stream
+# Clean up:
+docker system prune -a
+docker volume prune
+# Docker compose:
+docker compose up -d
+docker compose logs -f
+docker compose down</code></td>
+            <td class="desc-cell"><strong>Docker Container Management</strong><code>docker stats</code> shows live CPU/memory for running containers. <code>exec -it ... bash</code> drops into a shell inside a running container. <code>system prune -a</code> removes all stopped containers, dangling images, and unused networks — reclaims disk space. <span class="tag tag-info">DOCKER</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux strace ltrace system call trace debug process hang stuck">
+            <td><code class="code-cell cmd-lx">strace -p 1234
+strace -e trace=network -p 1234
+strace -c nginx -t
+# Check open files for a process:
+lsof -p 1234
+ls -la /proc/1234/fd/
+# Check memory maps:
+cat /proc/1234/maps</code></td>
+            <td class="desc-cell"><strong>Process Tracing &amp; /proc Debugging</strong><code>strace -p PID</code> attaches to a running process and shows every syscall — invaluable when a process hangs and logs say nothing. <code>-e trace=network</code> filters to network calls only. <code>lsof -p</code> shows all open file descriptors, sockets, and pipes. <span class="tag tag-danger">ADVANCED</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux memory swap vmstat oom killer out of memory dmesg">
+            <td><code class="code-cell cmd-lx">free -h
+swapon --show
+dmesg | grep -i "oom\|killed\|out of memory"
+cat /proc/meminfo
+vmstat -s
+# Check what processes are OOM candidates:
+cat /proc/*/oom_score 2>/dev/null | sort -rn | head</code></td>
+            <td class="desc-cell"><strong>Memory &amp; OOM Killer</strong>When a process is mysteriously killed, check <code>dmesg</code> for OOM killer events. The kernel kills the process with the highest OOM score. <code>/proc/meminfo</code> gives detailed breakdown including <code>MemAvailable</code> — the actual usable memory (better metric than free). <span class="tag tag-danger">OOM KILLER</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux cgroup namespace container resource limits cpu memory isolation">
+            <td><code class="code-cell cmd-lx">systemd-cgls
+systemctl status --no-pager service.service
+cat /sys/fs/cgroup/memory/system.slice/memory.usage_in_bytes
+# Set memory limit on service:
+sudo systemctl set-property nginx.service MemoryMax=512M
+sudo systemctl set-property nginx.service CPUQuota=50%</code></td>
+            <td class="desc-cell"><strong>cgroups &amp; Resource Limits</strong>Systemd exposes cgroup controls per service. <code>systemctl set-property</code> limits CPU/memory permanently (written to drop-in files). Essential for multi-tenant servers — prevents a runaway process from starving others. <span class="tag tag-admin">CGROUPS</span></td>
+          </tr>
+
+          <tr class="cmd-row" data-search="linux nmap port scan network discovery open closed filtered">
+            <td><code class="code-cell cmd-lx"># Ping sweep:
+nmap -sn 10.0.0.0/24
+
+# TCP port scan:
+nmap -sT -p 22,80,443 10.0.0.1
+
+# Full scan with service version:
+nmap -sV -O 10.0.0.1
+
+# Fast scan top 100 ports:
+nmap -F 10.0.0.1
+
+# Output to file:
+nmap -sV 10.0.0.0/24 -oN /tmp/scan.txt</code></td>
+            <td class="desc-cell"><strong>nmap — Network Scanner</strong>Use for network discovery, firewall rule verification, and open port auditing. <code>-sn</code> is a ping sweep (no port scan). <code>-sV</code> probes service versions. Run from inside the network segment to verify FortiGate policies are working as expected. <span class="tag tag-tip">INSTALL: apt install nmap</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── TROUBLESHOOTING GUIDES ──────────────────────────── -->
+  <section class="section s-troubleshoot" id="sec-troubleshoot">
+    <div class="section-header">
+      <div class="section-badge">🚨</div>
+      <div class="section-title">Troubleshooting Step-by-Step Guides</div>
+      <span class="section-count">Click to expand</span>
+    </div>
+    <div class="ts-grid">
+
+      <!-- IPSec VPN -->
+      <div class="ts-card" id="ts-ipsec">
+        <div class="ts-card-header" onclick="toggleCard('ts-ipsec')">
+          <span class="ts-card-icon">🔐</span>
+          <span class="ts-card-title" style="color:#f74f4f">IPsec VPN Tunnel Down</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check tunnel summary — is Phase1 up?</div>
+              <code class="ts-step-cmd">get vpn ipsec tunnel summary</code>
+              <p class="ts-step-note">Look for <code>established</code> in the IKE column. If missing, Phase1 is failing. Note the peer IP.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check detailed tunnel state</div>
+              <code class="ts-step-cmd">get vpn ipsec tunnel details
+diagnose vpn tunnel list name &lt;tunnel-name&gt;</code>
+              <p class="ts-step-note">Confirms SA state, bytes in/out, selectors. Zero traffic on an "up" tunnel = selector mismatch.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Enable IKE debug to see Phase1/2 negotiation</div>
+              <code class="ts-step-cmd">diagnose vpn ike log-filter dst-addr4 &lt;peer-ip&gt;
+diagnose debug app ike -1
+diagnose debug enable</code>
+              <p class="ts-step-note">Watch for: <code>no proposal chosen</code> (encryption mismatch), <code>invalid id</code> (PSK wrong), <code>no policy found</code> (selector mismatch). Always run <code>diagnose debug disable</code> when done.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Confirm routing to peer exists</div>
+              <code class="ts-step-cmd">get router info routing-table all | grep &lt;peer-ip&gt;</code>
+              <p class="ts-step-note">If no route to the peer IP, FortiGate can't send IKE packets — check your WAN/SD-WAN interface routing.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Sniff IKE packets to/from peer</div>
+              <code class="ts-step-cmd">diagnose sniffer packet any 'host &lt;peer-ip&gt; and port 500' 6 0 l
+diagnose sniffer packet any 'host &lt;peer-ip&gt; and port 4500' 6 0 l</code>
+              <p class="ts-step-note">Port 500 = IKE. Port 4500 = NAT-T. If you see outbound packets but no reply, the peer is not responding or there's a firewall blocking UDP 500/4500.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Bounce the tunnel manually</div>
+              <code class="ts-step-cmd">diagnose vpn tunnel flush &lt;tunnel-name&gt;</code>
+              <p class="ts-step-note">Forces renegotiation. If tunnel comes up then drops again, check DPD settings and peer keepalives.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">7</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check firewall policy allows tunnel traffic</div>
+              <code class="ts-step-cmd">diagnose firewall iprope lookup &lt;src-ip&gt; &lt;dst-ip&gt; 6 1024 443</code>
+              <p class="ts-step-note">Even with tunnel up, traffic may be dropped if no policy exists for the interesting traffic subnets.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">8</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common root causes checklist</div>
+              <p class="ts-step-note">
+                ❌ <strong>Mismatched encryption/hash</strong> — IKEv2 both sides must match exactly<br>
+                ❌ <strong>Wrong PSK</strong> — IKEv1 or PSK-based IKEv2<br>
+                ❌ <strong>Selector mismatch</strong> — subnet ranges don't match peer's Phase2<br>
+                ❌ <strong>NAT issue</strong> — enable NAT-T if either side is behind NAT<br>
+                ❌ <strong>Dead peer detection</strong> — DPD timeout causing flapping<br>
+                ❌ <strong>Routing asymmetry</strong> — HA or SD-WAN sending reply out wrong interface
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BGP -->
+      <div class="ts-card" id="ts-bgp">
+        <div class="ts-card-header" onclick="toggleCard('ts-bgp')">
+          <span class="ts-card-icon">📡</span>
+          <span class="ts-card-title" style="color:var(--accent)">BGP Not Establishing / Missing Routes</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check BGP summary — peer state</div>
+              <code class="ts-step-cmd">get router info bgp summary</code>
+              <p class="ts-step-note">State should be <code>Established</code>. Other states: <code>Active</code> = trying to connect (TCP), <code>Idle</code> = not attempting, <code>Connect</code> = TCP SYN sent.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check TCP reachability to BGP peer</div>
+              <code class="ts-step-cmd">diagnose sniffer packet any 'host &lt;peer-ip&gt; and port 179' 6 0 l</code>
+              <p class="ts-step-note">BGP runs over TCP 179. If no packets seen, a firewall rule or routing issue is blocking the TCP session before BGP even starts.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check BGP neighbor detail</div>
+              <code class="ts-step-cmd">get router info bgp neighbors &lt;peer-ip&gt;</code>
+              <p class="ts-step-note">Look at: <code>BGP state</code>, <code>Hold time</code>, <code>Connect Retry</code>, <code>Notification</code> messages (these tell you why it dropped). Also confirms remote ASN.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Verify route exchange</div>
+              <code class="ts-step-cmd">get router info bgp neighbors &lt;peer-ip&gt; advertised-routes
+get router info bgp neighbors &lt;peer-ip&gt; received-routes</code>
+              <p class="ts-step-note">If established but no routes received: check peer's redistribute or network statements. If sending but peer not accepting: check peer's route-map/prefix-list filters.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check routing table for BGP routes</div>
+              <code class="ts-step-cmd">get router info routing-table bgp
+get router info routing-table database</code>
+              <p class="ts-step-note"><code>database</code> shows all learned routes even if not installed. If a route is in database but not routing-table, a higher-priority route (static/connected) is winning.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Enable BGP debug</div>
+              <code class="ts-step-cmd">diagnose ip router bgp all enable
+diagnose ip router bgp level info
+diagnose debug enable
+# Wait for events, then:
+diagnose ip router bgp all disable
+diagnose debug disable</code>
+              <p class="ts-step-note">Shows OPEN, UPDATE, NOTIFICATION messages in real time. Look for NOTIFICATION codes — these are the BGP error codes explaining why the session dropped.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">7</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common BGP issues checklist</div>
+              <p class="ts-step-note">
+                ❌ <strong>Wrong remote ASN</strong> — must match exactly what peer is configured with<br>
+                ❌ <strong>Wrong update-source interface</strong> — esp. for loopback-peered BGP<br>
+                ❌ <strong>Route-map filtering everything</strong> — check inbound/outbound route-maps<br>
+                ❌ <strong>Missing redistribute</strong> — static/connected routes not redistributed into BGP<br>
+                ❌ <strong>eBGP multihop not set</strong> — if peer is not directly connected<br>
+                ❌ <strong>Firewall blocking TCP 179</strong> — check interface policies and SD-WAN rules
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSL VPN / FortiClient -->
+      <div class="ts-card" id="ts-forticlient">
+        <div class="ts-card-header" onclick="toggleCard('ts-forticlient')">
+          <span class="ts-card-icon">💻</span>
+          <span class="ts-card-title" style="color:var(--accent4)">FortiClient / SSL-VPN Issues</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check SSL-VPN daemon status on FortiGate</div>
+              <code class="ts-step-cmd">get vpn ssl monitor
+diagnose vpn ssl list</code>
+              <p class="ts-step-note">Shows active SSL-VPN sessions. If user's session appears but they're having issues, proceed to routing/policy checks.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check SSL-VPN port is reachable from client</div>
+              <code class="ts-step-cmd"># On client Mac/Windows:
+nc -vz &lt;fortigate-wan-ip&gt; 443
+curl -k https://&lt;fortigate-wan-ip&gt;:443</code>
+              <p class="ts-step-note">If port 443 is blocked, SSL-VPN can't establish. Check ISP, local firewall on client, and FortiGate WAN policy.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Enable SSL-VPN debug on FortiGate</div>
+              <code class="ts-step-cmd">diagnose debug app sslvpn -1
+diagnose debug enable
+# Reproduce the issue, then:
+diagnose debug disable</code>
+              <p class="ts-step-note">Shows authentication attempts, certificate errors, and tunnel setup. Look for <code>authentication failed</code>, <code>group not found</code>, or <code>split tunnel</code> policy mismatches.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check assigned IP and split-tunnel routes</div>
+              <code class="ts-step-cmd">diagnose vpn ssl list
+get vpn ssl settings</code>
+              <p class="ts-step-note">Confirms IP pool assignment and portal config. If user connects but can't reach internal resources, check split-tunnel routing config and firewall policies for SSL-VPN zone.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check DNS resolution from VPN client</div>
+              <code class="ts-step-cmd"># On client:
+scutil --dns          # macOS — check VPN resolver
+nslookup internal.domain.local</code>
+              <p class="ts-step-note">Split-DNS is a common issue — VPN may connect but internal DNS isn't pushed correctly. Verify DNS servers in SSL-VPN portal config.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">FortiClient on macOS — common fixes</div>
+              <code class="ts-step-cmd"># Reset FortiClient network extension:
+sudo /Applications/FortiClient.app/Contents/MacOS/FortiClient vpn stop
+sudo /Applications/FortiClient.app/Contents/MacOS/FortiClient vpn start
+
+# Check VPN interface was created:
+ifconfig | grep utun</code>
+              <p class="ts-step-note">macOS requires a System Extension approval in Security &amp; Privacy. If <code>utun</code> interface not created, extension is likely blocked — check System Preferences → Security.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">7</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common FortiClient issues checklist</div>
+              <p class="ts-step-note">
+                ❌ <strong>Certificate CN mismatch</strong> — FQDN in FortiClient must match cert's CN/SAN<br>
+                ❌ <strong>MFA timeout</strong> — user didn't approve push in time<br>
+                ❌ <strong>Wrong portal/group mapping</strong> — user in wrong group, wrong IP pool assigned<br>
+                ❌ <strong>macOS System Extension blocked</strong> — needs manual approval<br>
+                ❌ <strong>Split tunnel not routing LAN</strong> — missing route in portal config<br>
+                ❌ <strong>FortiEMS compliance block</strong> — check endpoint compliance rules
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SD-WAN -->
+      <div class="ts-card" id="ts-sdwan">
+        <div class="ts-card-header" onclick="toggleCard('ts-sdwan')">
+          <span class="ts-card-icon">🌐</span>
+          <span class="ts-card-title" style="color:var(--accent-mac)">SD-WAN Traffic Not Using Expected Path</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check SD-WAN member status and health</div>
+              <code class="ts-step-cmd">diagnose sys virtual-wan-link health-check
+diagnose sys virtual-wan-link member</code>
+              <p class="ts-step-note">Each member shows: status (alive/dead), latency, jitter, packet loss. A "dead" member won't be used regardless of rules. Check if health-check SLA thresholds are set too strictly.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check which service rule traffic is matching</div>
+              <code class="ts-step-cmd">diagnose sys virtual-wan-link service</code>
+              <p class="ts-step-note">Shows SD-WAN service rules and which interface each is currently using. If a rule is matching but using wrong member, check SLA conditions and priority settings.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Trace the actual path for a specific flow</div>
+              <code class="ts-step-cmd">diagnose debug flow filter addr &lt;src-ip&gt;
+diagnose debug flow filter daddr &lt;dst-ip&gt;
+diagnose debug flow show function-name enable
+diagnose debug enable
+diagnose debug flow trace start 20</code>
+              <p class="ts-step-note">Flow trace shows which SD-WAN rule matched and which interface was chosen. Look for <code>sdwan_select_route</code> in the output.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check SD-WAN performance SLA targets</div>
+              <code class="ts-step-cmd">get router info virtual-wan-link</code>
+              <p class="ts-step-note">Shows configured SLA targets. If latency thresholds are too tight, the preferred link may be excluded. Tune thresholds or change rule strategy (best-quality vs lowest-cost vs manual).</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Sniff traffic on both SD-WAN members</div>
+              <code class="ts-step-cmd"># Check which interface traffic is actually leaving on:
+diagnose sniffer packet &lt;wan1&gt; 'host &lt;dst-ip&gt;' 4 20
+diagnose sniffer packet &lt;wan2&gt; 'host &lt;dst-ip&gt;' 4 20</code>
+              <p class="ts-step-note">Run both in sequence or open two SSH sessions. Confirms at packet level which egress path is being used vs. what you expect.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common SD-WAN issues checklist</div>
+              <p class="ts-step-note">
+                ❌ <strong>Health check probe failing</strong> — wrong probe IP, ICMP blocked, wrong interval<br>
+                ❌ <strong>SLA thresholds too aggressive</strong> — link marked dead due to minor jitter<br>
+                ❌ <strong>Rule order wrong</strong> — implicit rule catching traffic before SD-WAN rule<br>
+                ❌ <strong>Existing session not rerouted</strong> — SD-WAN only applies to new sessions; flush sessions to force reroute<br>
+                ❌ <strong>Static route overriding SD-WAN</strong> — check for conflicting static routes with lower distance<br>
+                ❌ <strong>BGP routes not re-advertised after failover</strong> — check BGP community/AS-path on backup link
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HA Failover -->
+      <div class="ts-card" id="ts-ha">
+        <div class="ts-card-header" onclick="toggleCard('ts-ha')">
+          <span class="ts-card-icon">⚡</span>
+          <span class="ts-card-title" style="color:var(--accent-fg)">FortiGate HA / Cluster Issues</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check HA status and sync state</div>
+              <code class="ts-step-cmd">get system ha status
+diagnose sys ha status</code>
+              <p class="ts-step-note">Shows which unit is primary, HA mode (A/P or A/A), sync status, heartbeat interface state, and override settings. Both units must show <code>in sync</code>.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check config checksums match</div>
+              <code class="ts-step-cmd">diagnose sys ha checksum show
+diagnose sys ha checksum recalculate</code>
+              <p class="ts-step-note">Checksum mismatch between primary and secondary = config out of sync. <code>recalculate</code> forces a sync check. If persistent, look for locally-modified settings on secondary.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check heartbeat interfaces</div>
+              <code class="ts-step-cmd">diagnose sys ha dump-by vcluster
+get system interface | grep -A5 heartbeat</code>
+              <p class="ts-step-note">HA heartbeat must be up on both units. Heartbeat loss triggers failover. Check the dedicated HA link or heartbeat VLAN for physical issues.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Force failover (planned maintenance)</div>
+              <code class="ts-step-cmd">execute ha failover set 1
+# After maintenance, revert:
+execute ha failover unset</code>
+              <p class="ts-step-note"><span style="color:#f74f4f">⚠ This causes a brief traffic interruption.</span> Alert the team before running. Sessions are re-established on the new primary.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Connect directly to secondary unit CLI</div>
+              <code class="ts-step-cmd">execute ha manage &lt;secondary-id&gt; admin</code>
+              <p class="ts-step-note">Allows you to run CLI commands on the secondary from the primary's session. Use secondary ID from <code>get system ha status</code> output. Needed to check secondary-specific interface states.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common HA issues checklist</div>
+              <p class="ts-step-note">
+                ❌ <strong>Heartbeat link down</strong> — split-brain risk; both units may become primary<br>
+                ❌ <strong>Config out of sync</strong> — changes made directly on secondary<br>
+                ❌ <strong>Different firmware versions</strong> — units must run identical FortiOS version<br>
+                ❌ <strong>HA override enabled</strong> — unit with higher priority may not be primary if override off<br>
+                ❌ <strong>Session-sync failing</strong> — long-lived sessions may drop on failover<br>
+                ❌ <strong>SNMP/syslog from wrong unit</strong> — check management IP binding after failover
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Routing / Connectivity -->
+      <div class="ts-card" id="ts-routing">
+        <div class="ts-card-header" onclick="toggleCard('ts-routing')">
+          <span class="ts-card-icon">🗺️</span>
+          <span class="ts-card-title" style="color:#f74f7e">No Connectivity / Routing Issue</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Ping from FortiGate itself vs. through it</div>
+              <code class="ts-step-cmd"># FortiGate pinging destination:
+execute ping &lt;dst-ip&gt;
+execute ping-options source &lt;src-interface-ip&gt;
+execute ping &lt;dst-ip&gt;</code>
+              <p class="ts-step-note">If FortiGate can ping but clients can't, the issue is policy or NAT. If FortiGate itself can't ping, it's routing or WAN. Always set source interface for accurate results.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Confirm route exists for destination</div>
+              <code class="ts-step-cmd">get router info routing-table all
+get router info routing-table details &lt;dst-ip&gt;</code>
+              <p class="ts-step-note">If no route, traffic is blackholed or hitting a default route unexpectedly. Check BGP, OSPF, or static routes for the subnet.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Run flow debug to trace policy hit</div>
+              <code class="ts-step-cmd">diagnose debug flow filter addr &lt;src-ip&gt;
+diagnose debug flow filter daddr &lt;dst-ip&gt;
+diagnose debug flow show function-name enable
+diagnose debug enable
+diagnose debug flow trace start 20</code>
+              <p class="ts-step-note">This is the definitive tool. Look for: <code>Denied by forward policy check</code>, <code>no matching policy</code>, <code>reverse path check fail</code>, or <code>iprope_in_check() check failed</code>.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Sniff both ingress and egress interfaces</div>
+              <code class="ts-step-cmd"># See if traffic arrives on ingress:
+diagnose sniffer packet &lt;lan-int&gt; 'host &lt;src-ip&gt; and host &lt;dst-ip&gt;' 4 20
+# See if traffic leaves on egress:
+diagnose sniffer packet &lt;wan-int&gt; 'host &lt;src-ip&gt; and host &lt;dst-ip&gt;' 4 20</code>
+              <p class="ts-step-note">Traffic arriving on LAN but not leaving WAN = policy drop or routing issue. Traffic leaving WAN but no reply = upstream or NAT issue.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check session table for existing state</div>
+              <code class="ts-step-cmd">diagnose sys session filter src &lt;src-ip&gt;
+diagnose sys session filter dst &lt;dst-ip&gt;
+diagnose sys session list</code>
+              <p class="ts-step-note">If a stale session exists with wrong routing, it may persist even after a route change. Clear with <code>diagnose sys session clear</code> — this affects all sessions. <span style="color:#f74f4f">Use carefully in production.</span></p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check NAT is translating correctly</div>
+              <code class="ts-step-cmd">diagnose firewall iprope lookup &lt;src&gt; &lt;dst&gt; 6 1024 443
+get firewall policy | grep -A20 "policy-id &lt;id&gt;"</code>
+              <p class="ts-step-note">If traffic is NATted to wrong source IP, check VIP and SNAT settings. Confirm <code>nat enable</code> is set on the correct policy and NAT pool is right.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BGP Megaport / Cloud -->
+      <div class="ts-card" id="ts-megaport">
+        <div class="ts-card-header" onclick="toggleCard('ts-megaport')">
+          <span class="ts-card-icon">☁️</span>
+          <span class="ts-card-title" style="color:var(--accent2)">Megaport / Direct Connect / FastConnect BGP</span>
+          <span class="ts-card-chevron">▼</span>
+        </div>
+        <div class="ts-card-body">
+          <div class="ts-step">
+            <div class="ts-step-num">1</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check BGP sessions to MCR peers</div>
+              <code class="ts-step-cmd">get router info bgp summary</code>
+              <p class="ts-step-note">Look for your two Megaport MCR peer IPs (typically <code>169.254.x.x</code> link-locals or assigned /30s). Both should show <code>Established</code> for redundancy.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">2</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Check VLAN subinterfaces for MCR are up</div>
+              <code class="ts-step-cmd">get system interface | grep -A10 &lt;vlan-interface&gt;
+diagnose netlink interface list | grep &lt;vlan-int&gt;</code>
+              <p class="ts-step-note">If the VLAN interface is down, BGP can't form. Check VLAN tagging matches what Megaport provisioned. Verify the parent physical interface is up and linked.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">3</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Confirm prefixes being advertised to MCR</div>
+              <code class="ts-step-cmd">get router info bgp neighbors &lt;mcr-peer-ip&gt; advertised-routes</code>
+              <p class="ts-step-note">Your on-prem prefixes (e.g., your /29 public block) should appear here. If missing, check BGP network statements or redistribution config in FortiGate BGP settings.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">4</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Confirm cloud prefixes received from MCR</div>
+              <code class="ts-step-cmd">get router info bgp neighbors &lt;mcr-peer-ip&gt; received-routes
+get router info routing-table bgp</code>
+              <p class="ts-step-note">OCI VCN CIDRs and AWS VPC CIDRs should appear as BGP routes. If not received, check Megaport MCR VXC config and cloud side BGP settings (AWS DXGW, OCI FastConnect).</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">5</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Test reachability to cloud instances</div>
+              <code class="ts-step-cmd">execute ping-options source &lt;fortigate-lan-ip&gt;
+execute ping &lt;aws-instance-private-ip&gt;
+execute ping &lt;oci-instance-private-ip&gt;
+
+# Trace path:
+execute traceroute &lt;cloud-ip&gt;</code>
+              <p class="ts-step-note">Ping from FortiGate first. If reachable from FortiGate but not from LAN clients, the issue is internal routing or firewall policy — not the cloud circuit.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">6</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Sniff traffic on MCR-facing VLAN interface</div>
+              <code class="ts-step-cmd">diagnose sniffer packet &lt;vlan-int&gt; 'host &lt;cloud-ip&gt;' 6 0 l</code>
+              <p class="ts-step-note">Confirms traffic is actually leaving on the correct interface toward Megaport. If packets seen outbound but no replies, check MCR routing or cloud-side security groups/NACLs.</p>
+            </div>
+          </div>
+          <div class="ts-step">
+            <div class="ts-step-num">7</div>
+            <div class="ts-step-content">
+              <div class="ts-step-label">Common Megaport/cloud BGP issues</div>
+              <p class="ts-step-note">
+                ❌ <strong>AWS DXGW not associated to TGW</strong> — check Direct Connect Gateway → TGW association in AWS console<br>
+                ❌ <strong>OCI route table missing DRG</strong> — ensure DRG attachment and route rules in OCI VCN<br>
+                ❌ <strong>BGP AS mismatch</strong> — FortiGate AS (65000) must match what MCR expects<br>
+                ❌ <strong>Missing allowed prefixes on cloud side</strong> — AWS VIF and OCI FastConnect have prefix allow-lists<br>
+                ❌ <strong>MTU mismatch over FastConnect/DX</strong> — use 1500 or match cloud provider's MTU<br>
+                ❌ <strong>Second MCR node not peered</strong> — check both MCR nodes have BGP sessions for redundancy
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end ts-grid -->
+  </section>
+
+  <!-- ─── KUBERNETES ────────────────────────────────────────── -->
+  <section class="section s-kubernetes" id="sec-kubernetes">
+    <div class="section-header">
+      <div class="section-badge">☸</div>
+      <div class="section-title">Kubernetes (kubectl)</div>
+      <span class="section-count">K8s Commands</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="kubectl get pods nodes services deployments namespaces all resources">
+            <td><code class="code-cell cmd-k8s">kubectl get pods
+kubectl get pods -A
+kubectl get pods -n kube-system
+kubectl get pods -o wide
+kubectl get all -n my-namespace</code></td>
+            <td class="desc-cell"><strong>Get Resources</strong>Lists Kubernetes objects. <code>-A</code> all namespaces, <code>-n</code> specific namespace, <code>-o wide</code> shows node assignment and IP. Use <code>get all</code> to see pods, services, deployments, and replicasets together. <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl describe pod node service event details labels annotations">
+            <td><code class="code-cell cmd-k8s">kubectl describe pod my-pod -n default
+kubectl describe node worker-01
+kubectl describe svc my-service
+kubectl describe deployment my-app</code></td>
+            <td class="desc-cell"><strong>Describe Resources</strong>Shows detailed information about a K8s object including events, conditions, resource limits, and labels. The <strong>Events section</strong> at the bottom is most useful for troubleshooting — shows why a pod is pending, crashlooping, or failing. <span class="tag tag-tip">CHECK EVENTS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl logs pod container output follow tail live stream">
+            <td><code class="code-cell cmd-k8s">kubectl logs my-pod
+kubectl logs my-pod -f
+kubectl logs my-pod --tail=100
+kubectl logs my-pod -c my-container
+kubectl logs my-pod --previous</code></td>
+            <td class="desc-cell"><strong>View Pod Logs</strong><code>-f</code> follows live output (like <code>tail -f</code>), <code>--tail</code> limits output, <code>-c</code> selects container in multi-container pods, <code>--previous</code> shows logs from the previous (crashed) container. Critical for app debugging. <span class="tag tag-info">LOGS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl exec shell pod bash interactive command run terminal">
+            <td><code class="code-cell cmd-k8s">kubectl exec -it my-pod -- /bin/bash
+kubectl exec -it my-pod -c my-container -- sh
+kubectl exec my-pod -- env
+kubectl exec my-pod -- curl http://other-svc:8080</code></td>
+            <td class="desc-cell"><strong>Exec Into a Pod</strong>Opens an interactive shell inside a running pod — essential for debugging. <code>-it</code> for interactive TTY. Run any command directly. If no bash, try <code>sh</code> or <code>/bin/ash</code>. Useful to test DNS resolution, network connectivity, and env vars from within the cluster. <span class="tag tag-tip">SHELL IN</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl apply create deploy manifest yaml file resource">
+            <td><code class="code-cell cmd-k8s">kubectl apply -f manifest.yaml
+kubectl apply -f ./manifests/
+kubectl apply -k ./kustomize/
+kubectl create deployment nginx --image=nginx
+kubectl create namespace my-ns</code></td>
+            <td class="desc-cell"><strong>Apply / Create Resources</strong><code>apply</code> is declarative (creates or updates). <code>create</code> is imperative (fails if exists). Apply a directory to deploy all manifests at once. <code>-k</code> for Kustomize directories. Preferred: always use <code>apply</code> with YAML files for GitOps workflows. <span class="tag tag-info">DEPLOY</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl delete pod deployment service namespace remove resource cleanup">
+            <td><code class="code-cell cmd-k8s">kubectl delete pod my-pod
+kubectl delete -f manifest.yaml
+kubectl delete pod my-pod --force --grace-period=0
+kubectl delete all --all -n my-namespace</code></td>
+            <td class="desc-cell"><strong>Delete Resources</strong>Remove K8s objects. <code>--force --grace-period=0</code> immediately terminates a stuck/terminating pod. <code>delete all --all</code> removes all resources in a namespace (not namespaced resources like PVCs). <span class="tag tag-danger">DESTRUCTIVE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl scale replicas deployment horizontal pods up down">
+            <td><code class="code-cell cmd-k8s">kubectl scale deployment my-app --replicas=3
+kubectl scale deployment my-app --replicas=0
+kubectl rollout restart deployment my-app</code></td>
+            <td class="desc-cell"><strong>Scale &amp; Restart Deployments</strong>Scale replicas up/down. Scale to 0 effectively pauses a deployment. <code>rollout restart</code> performs a rolling restart without downtime — useful to pick up updated ConfigMaps or Secrets, or to clear pod state. <span class="tag tag-info">SCALE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl rollout status history undo deployment rollback version">
+            <td><code class="code-cell cmd-k8s">kubectl rollout status deployment my-app
+kubectl rollout history deployment my-app
+kubectl rollout undo deployment my-app
+kubectl rollout undo deployment my-app --to-revision=2</code></td>
+            <td class="desc-cell"><strong>Rollout Management</strong>Monitor and control deployment rollouts. <code>status</code> waits and reports progress. <code>history</code> shows revision history. <code>undo</code> instantly rolls back to the previous version. Specify <code>--to-revision</code> for a specific version. <span class="tag tag-tip">ROLLBACK</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl config context cluster namespace kubeconfig switch">
+            <td><code class="code-cell cmd-k8s">kubectl config get-contexts
+kubectl config use-context my-cluster
+kubectl config set-context --current --namespace=my-ns
+kubectl cluster-info
+kubectx   # (requires kubectx plugin)</code></td>
+            <td class="desc-cell"><strong>Context / Cluster Switching</strong>Manage multiple clusters via kubeconfig contexts. <code>use-context</code> switches cluster. <code>set-context --current</code> changes the default namespace. Install <code>kubectx</code> + <code>kubens</code> (brew install kubectx) for fast switching. <span class="tag tag-tip">INSTALL kubectx</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl port-forward service local port access tunnel proxy">
+            <td><code class="code-cell cmd-k8s">kubectl port-forward pod/my-pod 8080:80
+kubectl port-forward svc/my-service 8080:80
+kubectl port-forward deployment/my-app 8080:80 -n my-ns</code></td>
+            <td class="desc-cell"><strong>Port Forwarding</strong>Forwards a local port to a pod/service — access internal K8s services without exposing them externally. Access at <code>localhost:8080</code>. Essential for debugging apps behind ClusterIP services or during development. <span class="tag tag-tip">LOCAL ACCESS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl top cpu memory resource usage metrics node pod">
+            <td><code class="code-cell cmd-k8s">kubectl top pods
+kubectl top pods -A
+kubectl top nodes
+kubectl top pods --sort-by=memory</code></td>
+            <td class="desc-cell"><strong>Resource Usage (top)</strong>Shows real-time CPU and memory usage for pods and nodes. Requires metrics-server installed in cluster. <code>--sort-by</code> ranks by resource consumption. Use to identify resource hogs and right-size requests/limits. <span class="tag tag-info">METRICS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl get events troubleshoot warning error pod scheduling failed">
+            <td><code class="code-cell cmd-k8s">kubectl get events -n my-namespace
+kubectl get events --sort-by='.lastTimestamp'
+kubectl get events --field-selector reason=Failed</code></td>
+            <td class="desc-cell"><strong>Cluster Events</strong>Shows Kubernetes events — warnings, scheduling failures, image pull errors. Sort by timestamp to see the most recent events. Filter by reason to find specific failure types. Often faster than <code>describe</code> for cluster-wide issues. <span class="tag tag-tip">TROUBLESHOOT</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl secrets configmap env vars base64 decode view">
+            <td><code class="code-cell cmd-k8s">kubectl get secrets
+kubectl get secret my-secret -o jsonpath='{.data.password}' | base64 -d
+kubectl get configmap my-cm -o yaml
+kubectl create secret generic my-secret --from-literal=key=value</code></td>
+            <td class="desc-cell"><strong>Secrets &amp; ConfigMaps</strong>Retrieve and decode K8s secrets (base64 encoded, not encrypted). Use <code>jsonpath</code> to extract specific keys. ConfigMaps store non-sensitive config. Use <code>kubectl create secret</code> to create from literals or files. <span class="tag tag-admin">SENSITIVE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl node cordon drain taint maintenance pod eviction">
+            <td><code class="code-cell cmd-k8s">kubectl cordon node-01
+kubectl drain node-01 --ignore-daemonsets --delete-emptydir-data
+kubectl uncordon node-01
+kubectl taint nodes node-01 key=value:NoSchedule</code></td>
+            <td class="desc-cell"><strong>Node Maintenance</strong><code>cordon</code> prevents new pods from scheduling on a node. <code>drain</code> evicts existing pods (for maintenance/upgrades). <code>uncordon</code> makes node schedulable again. <code>taint</code> reserves nodes for specific workloads. <span class="tag tag-admin">MAINTENANCE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="kubectl namespace network policy ingress service type clusterip nodeport loadbalancer">
+            <td><code class="code-cell cmd-k8s">kubectl get svc -A
+kubectl get ingress -A
+kubectl get networkpolicy -A
+kubectl describe svc my-service
+kubectl get endpoints my-service</code></td>
+            <td class="desc-cell"><strong>Networking &amp; Services</strong>Inspect services, ingress rules, and network policies. <code>get endpoints</code> shows actual pod IPs backing a service — if empty, selector may not match pods. Critical for diagnosing "service not reaching pods" issues. <span class="tag tag-info">NETWORKING</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── GITLAB / GIT ──────────────────────────────────────── -->
+  <section class="section s-gitlab" id="sec-gitlab">
+    <div class="section-header">
+      <div class="section-badge">🦊</div>
+      <div class="section-title">GitLab &amp; Git Commands</div>
+      <span class="section-count">GitOps &amp; CI/CD</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="git clone repository remote url ssh https download project">
+            <td><code class="code-cell cmd-gl">git clone git@gitlab.com:org/repo.git
+git clone --depth=1 git@gitlab.com:org/repo.git
+git clone -b main git@gitlab.com:org/repo.git</code></td>
+            <td class="desc-cell"><strong>Clone a Repository</strong>Downloads a repo. <code>--depth=1</code> is a shallow clone (no history) — faster for CI/CD pipelines. <code>-b</code> clones a specific branch. Use SSH URL for key-based auth (no password prompts in CI). <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git status add commit stage unstaged changes working tree">
+            <td><code class="code-cell cmd-gl">git status
+git add .
+git add -p                  # interactive staging
+git commit -m "message"
+git commit --amend          # edit last commit</code></td>
+            <td class="desc-cell"><strong>Stage &amp; Commit Changes</strong>Core workflow. <code>git add -p</code> lets you review and selectively stage chunks — good practice for clean commits. <code>--amend</code> rewrites the last commit (don't use on pushed commits). <span class="tag tag-info">BASIC</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git push pull fetch remote origin branch upstream">
+            <td><code class="code-cell cmd-gl">git push origin main
+git push -u origin feature/my-branch
+git pull origin main
+git fetch --all
+git pull --rebase origin main</code></td>
+            <td class="desc-cell"><strong>Push &amp; Pull</strong><code>-u</code> sets upstream tracking. <code>fetch</code> downloads without merging. <code>pull --rebase</code> keeps a linear history by replaying your commits on top of remote — preferred in GitLab workflows. <span class="tag tag-info">REMOTE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git branch create switch checkout merge list delete">
+            <td><code class="code-cell cmd-gl">git branch                  # list local
+git branch -a               # list all including remote
+git checkout -b feature/new # create + switch
+git switch main             # modern way to switch
+git branch -d old-branch
+git push origin --delete old-branch</code></td>
+            <td class="desc-cell"><strong>Branch Management</strong>Create, switch, list, and delete branches. <code>git switch</code> is the modern alternative to <code>checkout</code> for switching branches. Delete both local (<code>-d</code>) and remote (<code>push --delete</code>) when done with a feature branch. <span class="tag tag-info">BRANCHING</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git merge rebase squash fast-forward conflict resolve">
+            <td><code class="code-cell cmd-gl">git merge feature/my-branch
+git merge --no-ff feature/my-branch  # always create merge commit
+git rebase main
+git rebase -i HEAD~3        # interactive rebase last 3 commits
+git cherry-pick abc1234</code></td>
+            <td class="desc-cell"><strong>Merge &amp; Rebase</strong><code>--no-ff</code> preserves merge history. <code>rebase -i</code> lets you squash, reorder, or edit commits before merging — useful to clean up before raising a MR. <code>cherry-pick</code> applies a specific commit to another branch. <span class="tag tag-tip">CLEAN HISTORY</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git log history commits author date oneline graph pretty format">
+            <td><code class="code-cell cmd-gl">git log --oneline
+git log --oneline --graph --all
+git log --author="Wasim" --since="2 weeks ago"
+git log -p filename.txt     # changes to a file
+git show abc1234</code></td>
+            <td class="desc-cell"><strong>Log &amp; History</strong><code>--graph --all</code> shows a visual branch history. Filter by author or date. <code>-p</code> shows the actual diff for each commit on a file. <code>git show</code> displays a specific commit's changes. <span class="tag tag-info">HISTORY</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git diff compare changes staged unstaged files commits branches">
+            <td><code class="code-cell cmd-gl">git diff                    # unstaged changes
+git diff --staged           # staged vs last commit
+git diff main feature/new   # branch comparison
+git diff HEAD~1 HEAD        # last commit changes</code></td>
+            <td class="desc-cell"><strong>Diff — Compare Changes</strong>View differences between working tree, staged, and committed code. Compare branches before merging. <code>HEAD~1</code> refers to one commit before HEAD. Use in CI to detect what changed between pipeline runs. <span class="tag tag-info">DIFF</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git stash save apply pop list discard work in progress">
+            <td><code class="code-cell cmd-gl">git stash
+git stash save "work in progress"
+git stash list
+git stash pop
+git stash apply stash@{0}
+git stash drop stash@{0}</code></td>
+            <td class="desc-cell"><strong>Stash</strong>Temporarily saves uncommitted changes so you can switch branches cleanly. <code>pop</code> applies the most recent stash and removes it. <code>apply</code> applies without removing. Stash often before pulling to avoid merge conflicts. <span class="tag tag-tip">CONTEXT SWITCH</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git reset revert undo hard soft mixed HEAD commit history">
+            <td><code class="code-cell cmd-gl">git reset --soft HEAD~1    # undo commit, keep staged
+git reset --hard HEAD~1    # undo commit + discard changes
+git revert abc1234         # safe undo (creates new commit)
+git restore filename.txt   # discard working changes</code></td>
+            <td class="desc-cell"><strong>Undo / Reset</strong><code>revert</code> is safe for shared branches — creates a new commit that undoes changes. <code>reset --hard</code> is destructive — only use on local unpushed commits. <code>restore</code> discards file changes. <span class="tag tag-danger">HARD = DESTRUCTIVE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git remote add origin url change upstream fetch push">
+            <td><code class="code-cell cmd-gl">git remote -v
+git remote add origin git@gitlab.com:org/repo.git
+git remote set-url origin git@gitlab.com:org/new-repo.git
+git remote remove origin</code></td>
+            <td class="desc-cell"><strong>Manage Remotes</strong>View and configure remote URLs. Use <code>set-url</code> to switch from HTTPS to SSH (avoids password prompts) or after a repo rename/migration. Check this first if push/pull fails with "remote not found". <span class="tag tag-info">REMOTE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="gitlab ci cd pipeline yml yaml trigger job stage runner">
+            <td><code class="code-cell cmd-gl"># .gitlab-ci.yml basics:
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - echo "Building..."
+    - docker build -t myapp .
+
+deploy-job:
+  stage: deploy
+  script:
+    - kubectl apply -f k8s/</code></td>
+            <td class="desc-cell"><strong>GitLab CI/CD Pipeline</strong>GitLab CI is defined in <code>.gitlab-ci.yml</code> at repo root. Stages run sequentially; jobs in the same stage run in parallel. Each job runs on a GitLab Runner. Use <code>rules:</code> or <code>only:</code>/<code>except:</code> to control when jobs trigger. <span class="tag tag-info">CI/CD</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="gitlab runner register token executor docker shell kubernetes">
+            <td><code class="code-cell cmd-gl">gitlab-runner register
+gitlab-runner start
+gitlab-runner stop
+gitlab-runner list
+gitlab-runner verify</code></td>
+            <td class="desc-cell"><strong>GitLab Runner Management</strong>Register a new runner with your GitLab instance (provide URL + registration token from GitLab UI). Executors: <code>docker</code> (recommended), <code>shell</code>, <code>kubernetes</code>. <code>verify</code> checks runner connectivity. Run on your own infrastructure for private deployments. <span class="tag tag-info">RUNNER</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="gitlab api rest curl token project issue merge request pipeline trigger">
+            <td><code class="code-cell cmd-gl"># List projects:
+curl -H "PRIVATE-TOKEN: your_token" \
+  https://gitlab.com/api/v4/projects
+
+# Trigger pipeline:
+curl -X POST \
+  -H "PRIVATE-TOKEN: your_token" \
+  -F "ref=main" \
+  https://gitlab.com/api/v4/projects/123/trigger/pipeline</code></td>
+            <td class="desc-cell"><strong>GitLab REST API</strong>Automate GitLab with the REST API. Generate a Personal Access Token in GitLab UI → User Settings → Access Tokens. Use for pipeline triggers, creating issues, querying project info, or building automation around deployments. <span class="tag tag-tip">AUTOMATION</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git tag version release annotated lightweight semantic versioning">
+            <td><code class="code-cell cmd-gl">git tag                         # list tags
+git tag v1.2.0                  # lightweight tag
+git tag -a v1.2.0 -m "Release"  # annotated tag
+git push origin v1.2.0
+git push origin --tags          # push all tags</code></td>
+            <td class="desc-cell"><strong>Tagging Releases</strong>Tags mark specific commits as releases. Annotated tags (<code>-a</code>) include metadata — preferred for releases. GitLab uses tags to trigger release pipelines. Tag must be pushed separately from commits. <span class="tag tag-info">RELEASE</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="git submodule dependency linked repos include external">
+            <td><code class="code-cell cmd-gl">git submodule add git@gitlab.com:org/lib.git lib/
+git submodule update --init --recursive
+git submodule foreach git pull origin main</code></td>
+            <td class="desc-cell"><strong>Git Submodules</strong>Embed another Git repo inside your repo. Common for shared libraries or config repos. <code>--recursive</code> initialises nested submodules. Run <code>update --init</code> after cloning a repo that has submodules. <span class="tag tag-info">ADVANCED</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── WINDOWS POWERSIELL ───────────────────────────────── -->
+  <section class="section s-windows" id="sec-windows">
+    <div class="section-header">
+      <div class="section-badge">🪟</div>
+      <div class="section-title">Windows CMD &amp; PowerShell (Network)</div>
+      <span class="section-count">Windows Bonus</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="cmd-row" data-search="powershell test-netconnection port tcp firewall connectivity latency">
+            <td><code class="code-cell cmd-win">Test-NetConnection google.com -Port 443
+Test-NetConnection 10.0.0.1 -Port 22 -InformationLevel Detailed
+(Test-NetConnection 10.0.0.1).PingSucceeded</code></td>
+            <td class="desc-cell"><strong>Test-NetConnection (PowerShell)</strong>Far superior to telnet for port testing. Shows TCP success, latency, route, and interface used. <code>-InformationLevel Detailed</code> shows the route taken. Returns objects — scriptable in PowerShell automations. <span class="tag tag-tip">BETTER THAN TELNET</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="powershell get-netadapter ip address dns route netsh interface">
+            <td><code class="code-cell cmd-win">Get-NetAdapter
+Get-NetIPAddress
+Get-NetRoute
+Get-DnsClientServerAddress
+Resolve-DnsName google.com</code></td>
+            <td class="desc-cell"><strong>PowerShell Network Cmdlets</strong>Modern PowerShell replacements for cmd tools. <code>Get-NetIPAddress</code> replaces <code>ipconfig</code>, <code>Get-NetRoute</code> replaces <code>route print</code>. <code>Resolve-DnsName</code> is a rich DNS tool. All return objects for scripting. <span class="tag tag-info">POWERSHELL</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="netsh interface ip reset firewall wlan wireless profile">
+            <td><code class="code-cell cmd-win">netsh interface ip reset
+netsh winsock reset
+netsh wlan show profiles
+netsh wlan show profile name="SSID" key=clear
+netsh advfirewall show allprofiles</code></td>
+            <td class="desc-cell"><strong>netsh — Network Shell</strong>Powerful Windows network config tool. <code>wlan show profile key=clear</code> reveals saved Wi-Fi passwords. <code>ip reset</code> resets TCP/IP stack (needs reboot). <code>advfirewall</code> manages Windows Firewall rules. <span class="tag tag-admin">ADMIN</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="windows event log viewer eventvwr system application security error">
+            <td><code class="code-cell cmd-win">Get-EventLog -LogName System -Newest 50
+Get-WinEvent -LogName System -MaxEvents 20
+Get-WinEvent -FilterHashtable @{LogName='System'; Level=2}</code></td>
+            <td class="desc-cell"><strong>Windows Event Log</strong>Queries the Event Log from PowerShell. Level 2 = Error, Level 3 = Warning. Filter by time, source, or event ID. Useful for diagnosing NIC driver errors, DHCP failures, or DNS client issues. <span class="tag tag-info">LOGS</span></td>
+          </tr>
+          <tr class="cmd-row" data-search="robocopy xcopy file transfer backup sync network share mirror">
+            <td><code class="code-cell cmd-win">robocopy C:\Source \\server\dest /MIR /Z /LOG:log.txt
+robocopy /MIR /COPYALL /R:3 /W:5</code></td>
+            <td class="desc-cell"><strong>Robocopy — Robust File Copy</strong>Far superior to xcopy for network file operations. <code>/MIR</code> mirrors directories, <code>/Z</code> restartable mode (survives network drops), <code>/R:3</code> retries 3 times. Essential for large file transfers over SMB/WAN links. <span class="tag tag-tip">USE ROBOCOPY</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── POWERSHELL & ENTRA ID ─────────────────────────────── -->
+  <section class="section s-powershell" id="sec-powershell">
+    <div class="section-header">
+      <div class="section-badge">⚙️</div>
+      <div class="section-title">PowerShell — Entra ID &amp; Microsoft 365</div>
+      <span class="section-count">Sysadmin Scripts</span>
+    </div>
+    <div class="cell-wrap">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Script / Command</th><th>Description &amp; Usage</th></tr>
+        </thead>
+        <tbody>
+
+          <!-- ── MODULE SETUP ── -->
+          <tr class="cmd-row" data-search="powershell install module entra graph azure ad connect setup prerequisite mgraph">
+            <td><code class="code-cell cmd-ps"># Install required modules (run as Admin once):
+Install-Module Microsoft.Graph -Scope CurrentUser -Force
+Install-Module ExchangeOnlineManagement -Scope CurrentUser -Force
+Install-Module MicrosoftTeams -Scope CurrentUser -Force
+
+# Connect to Microsoft Graph (Entra ID):
+Connect-MgGraph -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Directory.ReadWrite.All"
+
+# Connect to Exchange Online:
+Connect-ExchangeOnline -UserPrincipalName admin@domain.com
+
+# Disconnect when done:
+Disconnect-MgGraph
+Disconnect-ExchangeOnline -Confirm:$false</code></td>
+            <td class="desc-cell"><strong>Module Setup &amp; Connection</strong>Install Microsoft Graph SDK (replaces deprecated AzureAD module). Use <code>Connect-MgGraph</code> for all Entra ID / user / group operations. Scopes must match the operations you intend to run — add scopes as needed. <span class="tag tag-admin">ADMIN</span> <span class="tag tag-tip">RUN ONCE</span></td>
+          </tr>
+
+          <!-- ── BULK CREATE SECURITY GROUPS ── -->
+          <tr class="cmd-row" data-search="powershell create bulk security groups entra azure ad new-mggroup csv import">
+            <td><code class="code-cell cmd-ps"># ── Bulk Create Security Groups from CSV ──
+# CSV format: DisplayName,Description,MailNickname
+# Example CSV row: IT-Network-Team,Network Engineers,IT-Network-Team
+
+$groups = Import-Csv "C:\groups.csv"
+
+foreach ($group in $groups) {
+    $params = @{
+        DisplayName     = $group.DisplayName
+        Description     = $group.Description
+        MailNickname    = $group.MailNickname
+        SecurityEnabled = $true
+        MailEnabled     = $false
+        GroupTypes      = @()
+    }
+    $newGroup = New-MgGroup -BodyParameter $params
+    Write-Host "Created: $($newGroup.DisplayName) — $($newGroup.Id)" -ForegroundColor Green
+}
+
+Write-Host "Done. $($groups.Count) groups created." -ForegroundColor Cyan</code></td>
+            <td class="desc-cell"><strong>Bulk Create Security Groups (CSV)</strong>Creates pure security groups in Entra ID from a CSV file. <code>SecurityEnabled=$true</code> + <code>MailEnabled=$false</code> = security group (not M365 group). <code>GroupTypes=@()</code> ensures it's not a dynamic group. Output logs each created group's Object ID for audit trail. <span class="tag tag-admin">GRAPH SCOPE: Group.ReadWrite.All</span></td>
+          </tr>
+
+          <!-- ── CREATE SINGLE GROUP ── -->
+          <tr class="cmd-row" data-search="powershell create single security group entra new-mggroup microsoft 365">
+            <td><code class="code-cell cmd-ps"># Create a single security group:
+$params = @{
+    DisplayName     = "VPN-Users"
+    Description     = "Users permitted FortiClient VPN access"
+    MailNickname    = "VPN-Users"
+    SecurityEnabled = $true
+    MailEnabled     = $false
+    GroupTypes      = @()
+}
+$group = New-MgGroup -BodyParameter $params
+Write-Host "Created group ID: $($group.Id)"
+
+# Add an owner to the group:
+$ownerRef = @{ "@odata.id" = "https://graph.microsoft.com/v1.0/users/&lt;user-object-id&gt;" }
+New-MgGroupOwnerByRef -GroupId $group.Id -BodyParameter $ownerRef</code></td>
+            <td class="desc-cell"><strong>Create a Single Security Group</strong>Quick one-off group creation. Common use: creating groups for Conditional Access policies, FortiGate RADIUS auth, or app assignments. Capture the returned <code>Id</code> — you'll need it to add members or assign apps. <span class="tag tag-info">ENTRA</span></td>
+          </tr>
+
+          <!-- ── ADD MEMBERS TO GROUP ── -->
+          <tr class="cmd-row" data-search="powershell add member group entra azure ad bulk csv membership New-MgGroupMember">
+            <td><code class="code-cell cmd-ps"># Add a single user to a group:
+$groupId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$userId  = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userId
+
+# ── Bulk add from CSV (UPN column) ──
+$groupId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$members = Import-Csv "C:\members.csv"   # column: UPN
+
+foreach ($m in $members) {
+    $user = Get-MgUser -Filter "userPrincipalName eq '$($m.UPN)'"
+    if ($user) {
+        New-MgGroupMember -GroupId $groupId -DirectoryObjectId $user.Id
+        Write-Host "Added: $($m.UPN)" -ForegroundColor Green
+    } else {
+        Write-Host "NOT FOUND: $($m.UPN)" -ForegroundColor Red
+    }
+}</code></td>
+            <td class="desc-cell"><strong>Add Members to a Group (Bulk)</strong>Adds users by UPN from CSV. The <code>-Filter</code> lookup handles UPN→ObjectId resolution automatically. Red output flags users not found in Entra — useful for spotting typos before an audit. <span class="tag tag-info">ENTRA</span></td>
+          </tr>
+
+          <!-- ── USER OFFBOARDING ── -->
+          <tr class="cmd-row" data-search="powershell offboarding user disable block sign-in revoke sessions remove licenses groups manager entra azure ad">
+            <td><code class="code-cell cmd-ps"># ── Full User Offboarding Script ──
+param([string]$UPN = "leaver@domain.com")
+
+Connect-MgGraph -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Directory.ReadWrite.All"
+Connect-ExchangeOnline -UserPrincipalName admin@domain.com
+
+$user = Get-MgUser -Filter "userPrincipalName eq '$UPN'" -Property Id,DisplayName,AssignedLicenses
+
+if (-not $user) { Write-Error "User not found: $UPN"; exit }
+
+Write-Host "=== Offboarding: $($user.DisplayName) ===" -ForegroundColor Yellow
+
+# 1. Block sign-in immediately
+Update-MgUser -UserId $user.Id -AccountEnabled $false
+Write-Host "[1] Sign-in blocked" -ForegroundColor Green
+
+# 2. Revoke all active sessions / tokens
+Revoke-MgUserSignInSession -UserId $user.Id
+Write-Host "[2] All sessions revoked" -ForegroundColor Green
+
+# 3. Reset password to random (prevent re-entry)
+$newPw = [System.Web.Security.Membership]::GeneratePassword(20,4)
+$pwProfile = @{ Password = $newPw; ForceChangePasswordNextSignIn = $false }
+Update-MgUser -UserId $user.Id -PasswordProfile $pwProfile
+Write-Host "[3] Password reset" -ForegroundColor Green
+
+# 4. Remove from all groups (except dynamic)
+$groups = Get-MgUserMemberOf -UserId $user.Id | Where-Object { $_.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.group" }
+foreach ($g in $groups) {
+    try {
+        Remove-MgGroupMemberByRef -GroupId $g.Id -DirectoryObjectId $user.Id
+        Write-Host "    Removed from: $($g.AdditionalProperties['displayName'])" -ForegroundColor DarkGray
+    } catch { Write-Host "    Skipped (dynamic/role): $($g.AdditionalProperties['displayName'])" -ForegroundColor DarkYellow }
+}
+Write-Host "[4] Group memberships removed" -ForegroundColor Green
+
+# 5. Remove all licence assignments
+if ($user.AssignedLicenses) {
+    $removeLicenses = $user.AssignedLicenses | Select-Object -ExpandProperty SkuId
+    Set-MgUserLicense -UserId $user.Id -AddLicenses @() -RemoveLicenses $removeLicenses
+    Write-Host "[5] Licences removed" -ForegroundColor Green
+}
+
+# 6. Convert mailbox to shared (preserves email, no licence needed)
+Set-Mailbox -Identity $UPN -Type Shared
+Write-Host "[6] Mailbox converted to Shared" -ForegroundColor Green
+
+# 7. Set Out of Office auto-reply
+Set-MailboxAutoReplyConfiguration -Identity $UPN `
+    -AutoReplyState Enabled `
+    -InternalMessage "$($user.DisplayName) has left the organisation. Please contact helpdesk@domain.com." `
+    -ExternalMessage "$($user.DisplayName) is no longer with the organisation. Please contact info@domain.com."
+Write-Host "[7] Out-of-office set" -ForegroundColor Green
+
+# 8. Hide from Global Address List
+Set-Mailbox -Identity $UPN -HiddenFromAddressListsEnabled $true
+Write-Host "[8] Hidden from GAL" -ForegroundColor Green
+
+# 9. Forward mail to manager (optional — uncomment and set manager UPN)
+# Set-Mailbox -Identity $UPN -ForwardingSmtpAddress "manager@domain.com" -DeliverToMailboxAndForward $false
+
+Write-Host "`n=== Offboarding complete for $UPN ===" -ForegroundColor Cyan
+Write-Host "MANUAL TODO: Reclaim hardware, revoke physical access, notify HR" -ForegroundColor Magenta
+
+Disconnect-MgGraph
+Disconnect-ExchangeOnline -Confirm:$false</code></td>
+            <td class="desc-cell"><strong>Full User Offboarding Script</strong>End-to-end leaver process in one script. Runs 8 steps:
+<br><br>
+1. Block sign-in (immediate)<br>
+2. Revoke all OAuth tokens &amp; sessions<br>
+3. Reset password<br>
+4. Remove all group memberships<br>
+5. Remove M365 licences<br>
+6. Convert mailbox to Shared (no licence cost)<br>
+7. Set out-of-office<br>
+8. Hide from GAL<br>
+<br>
+Run as: <code>.\Offboard-User.ps1 -UPN "name@domain.com"</code>
+<span class="tag tag-danger">IMMEDIATE EFFECT</span> <span class="tag tag-admin">ADMIN REQUIRED</span></td>
+          </tr>
+
+          <!-- ── NEW USER ONBOARDING ── -->
+          <tr class="cmd-row" data-search="powershell onboarding new user create account entra azure ad mailbox license assign groups">
+            <td><code class="code-cell cmd-ps"># ── New User Onboarding ──
+param(
+    [string]$FirstName  = "Jane",
+    [string]$LastName   = "Smith",
+    [string]$Department = "IT",
+    [string]$Manager    = "manager@domain.com",
+    [string]$LicenseSku = "reseller-account:ENTERPRISEPREMIUM"  # M365 E3/E5 SKU
+)
+
+$UPN      = "$($FirstName.ToLower()).$($LastName.ToLower())@domain.com"
+$TempPw   = "Welcome@$(Get-Random -Minimum 1000 -Maximum 9999)!"
+$FullName = "$FirstName $LastName"
+
+# Create user
+$params = @{
+    DisplayName       = $FullName
+    GivenName         = $FirstName
+    Surname           = $LastName
+    UserPrincipalName = $UPN
+    MailNickname      = "$($FirstName.ToLower()).$($LastName.ToLower())"
+    Department        = $Department
+    AccountEnabled    = $true
+    PasswordProfile   = @{
+        Password                      = $TempPw
+        ForceChangePasswordNextSignIn = $true
+    }
+}
+$newUser = New-MgUser -BodyParameter $params
+Write-Host "Created user: $UPN  (ID: $($newUser.Id))" -ForegroundColor Green
+
+# Assign licence
+$licenseParams = @{
+    AddLicenses    = @(@{ SkuId = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "ENTERPRISEPREMIUM").SkuId })
+    RemoveLicenses = @()
+}
+Set-MgUserLicense -UserId $newUser.Id @licenseParams
+Write-Host "Licence assigned" -ForegroundColor Green
+
+# Set manager
+$managerUser = Get-MgUser -Filter "userPrincipalName eq '$Manager'"
+$managerRef  = @{ "@odata.id" = "https://graph.microsoft.com/v1.0/users/$($managerUser.Id)" }
+Set-MgUserManagerByRef -UserId $newUser.Id -BodyParameter $managerRef
+Write-Host "Manager set: $Manager" -ForegroundColor Green
+
+# Add to standard groups
+$standardGroups = @("All-Staff", "M365-Licenced-Users", "IT-Department")
+foreach ($gName in $standardGroups) {
+    $g = Get-MgGroup -Filter "displayName eq '$gName'"
+    if ($g) { New-MgGroupMember -GroupId $g.Id -DirectoryObjectId $newUser.Id }
+}
+Write-Host "Added to standard groups" -ForegroundColor Green
+
+Write-Host "`nTemp password: $TempPw" -ForegroundColor Yellow
+Write-Host "User must change on first login." -ForegroundColor Yellow</code></td>
+            <td class="desc-cell"><strong>New User Onboarding Script</strong>Creates a new Entra ID user, assigns an M365 licence, sets manager, and adds to standard groups in one pass.
+<br><br>
+Customise <code>$standardGroups</code> for your environment and update the <code>$LicenseSku</code> SkuPartNumber. Run <code>Get-MgSubscribedSku | Select SkuPartNumber,SkuId</code> to find your SKU names.
+<span class="tag tag-admin">ADMIN REQUIRED</span></td>
+          </tr>
+
+          <!-- ── GET USER INFO ── -->
+          <tr class="cmd-row" data-search="powershell get user info details entra azure ad sign-in last activity mfa status">
+            <td><code class="code-cell cmd-ps"># Get full user details:
+Get-MgUser -UserId "user@domain.com" -Property * | Format-List
+
+# Check MFA status:
+Get-MgUserAuthenticationMethod -UserId "user@domain.com"
+
+# List all users with their sign-in status:
+Get-MgUser -All -Property DisplayName,UserPrincipalName,AccountEnabled,SignInActivity |
+    Select DisplayName,UserPrincipalName,AccountEnabled,
+    @{N="LastSignIn";E={$_.SignInActivity.LastSignInDateTime}} |
+    Sort-Object LastSignIn -Descending | Format-Table
+
+# Find all disabled accounts:
+Get-MgUser -Filter "accountEnabled eq false" -Property DisplayName,UserPrincipalName |
+    Select DisplayName,UserPrincipalName</code></td>
+            <td class="desc-cell"><strong>Get User Information &amp; Audit</strong>Retrieve detailed user properties. <code>SignInActivity</code> requires <code>AuditLog.Read.All</code> scope. Useful for identifying inactive accounts, stale licences, or users who haven't enrolled MFA. <span class="tag tag-info">AUDIT</span></td>
+          </tr>
+
+          <!-- ── PASSWORD RESET ── -->
+          <tr class="cmd-row" data-search="powershell password reset force change next sign-in entra azure ad bulk">
+            <td><code class="code-cell cmd-ps"># Reset a single user's password:
+$pw = @{
+    Password                      = "TempPassword@123"
+    ForceChangePasswordNextSignIn = $true
+}
+Update-MgUser -UserId "user@domain.com" -PasswordProfile $pw
+
+# Force password reset for all users in a group:
+$groupId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$members = Get-MgGroupMember -GroupId $groupId -All
+foreach ($m in $members) {
+    $pw = @{
+        Password                      = "Welcome@$(Get-Random -Min 1000 -Max 9999)!"
+        ForceChangePasswordNextSignIn = $true
+    }
+    Update-MgUser -UserId $m.Id -PasswordProfile $pw
+    Write-Host "Reset: $($m.Id)"
+}</code></td>
+            <td class="desc-cell"><strong>Password Reset (Single &amp; Bulk)</strong>Reset passwords and force change on next login. Bulk version iterates group members — useful after a credential breach or onboarding a cohort. Log the generated passwords securely and deliver via separate channel. <span class="tag tag-danger">SENSITIVE</span></td>
+          </tr>
+
+          <!-- ── CONDITIONAL ACCESS REPORT ── -->
+          <tr class="cmd-row" data-search="powershell conditional access policy list report export entra azure ad mfa">
+            <td><code class="code-cell cmd-ps"># List all Conditional Access policies and their state:
+Get-MgIdentityConditionalAccessPolicy |
+    Select DisplayName,State,@{N="CreatedDateTime";E={$_.CreatedDateTime}} |
+    Sort-Object DisplayName | Format-Table
+
+# Export to CSV:
+Get-MgIdentityConditionalAccessPolicy |
+    Select DisplayName,State,Description,CreatedDateTime,ModifiedDateTime |
+    Export-Csv "C:\CA-Policies-$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation
+
+Write-Host "Exported." -ForegroundColor Green</code></td>
+            <td class="desc-cell"><strong>Conditional Access Policy Report</strong>Exports all CA policies with their state (enabled/disabled/reportOnly). Run before any changes as a baseline. States: <code>enabled</code>, <code>disabled</code>, <code>enabledForReportingButNotEnforced</code> (report-only mode). <span class="tag tag-tip">EXPORT FIRST</span></td>
+          </tr>
+
+          <!-- ── LICENCE MANAGEMENT ── -->
+          <tr class="cmd-row" data-search="powershell licence license assign remove m365 microsoft 365 e3 e5 sku entra azure ad bulk">
+            <td><code class="code-cell cmd-ps"># Show all licences in tenant and available count:
+Get-MgSubscribedSku | Select SkuPartNumber,
+    @{N="Assigned";E={$_.ConsumedUnits}},
+    @{N="Total";E={$_.PrepaidUnits.Enabled}},
+    @{N="Available";E={$_.PrepaidUnits.Enabled - $_.ConsumedUnits}} |
+    Format-Table
+
+# Assign a licence to a user:
+$skuId = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq "ENTERPRISEPREMIUM").SkuId
+Set-MgUserLicense -UserId "user@domain.com" `
+    -AddLicenses @(@{ SkuId = $skuId }) `
+    -RemoveLicenses @()
+
+# Remove a licence from a user:
+Set-MgUserLicense -UserId "user@domain.com" `
+    -AddLicenses @() `
+    -RemoveLicenses @($skuId)
+
+# Find all unlicensed users:
+Get-MgUser -All -Property DisplayName,UserPrincipalName,AssignedLicenses |
+    Where-Object { $_.AssignedLicenses.Count -eq 0 } |
+    Select DisplayName,UserPrincipalName</code></td>
+            <td class="desc-cell"><strong>Licence Management</strong>Check tenant licence inventory, assign/remove licences, and find unlicensed users. Run the inventory check regularly — unused licences on disabled accounts are a common waste. <code>ENTERPRISEPREMIUM</code> = M365 E3. Check your SKU names with <code>Get-MgSubscribedSku</code>. <span class="tag tag-info">LICENCES</span></td>
+          </tr>
+
+          <!-- ── EXCHANGE / MAILBOX ── -->
+          <tr class="cmd-row" data-search="powershell exchange online mailbox shared delegate permissions inbox rules calendar forwarding">
+            <td><code class="code-cell cmd-ps"># Get mailbox details:
+Get-Mailbox -Identity "user@domain.com" | Format-List
+
+# Grant Full Access (delegate):
+Add-MailboxPermission -Identity "target@domain.com" `
+    -User "delegate@domain.com" -AccessRights FullAccess -InheritanceType All
+
+# Grant Send As:
+Add-RecipientPermission -Identity "target@domain.com" `
+    -Trustee "delegate@domain.com" -AccessRights SendAs -Confirm:$false
+
+# Check mailbox size:
+Get-MailboxStatistics -Identity "user@domain.com" |
+    Select DisplayName,TotalItemSize,ItemCount
+
+# List inbox rules:
+Get-InboxRule -Mailbox "user@domain.com" | Select Name,Enabled,Description
+
+# Check for mail forwarding (external forward audit):
+Get-Mailbox -ResultSize Unlimited |
+    Where-Object { $_.ForwardingSmtpAddress -ne $null } |
+    Select DisplayName,UserPrincipalName,ForwardingSmtpAddress | Format-Table</code></td>
+            <td class="desc-cell"><strong>Exchange Online — Mailbox Management</strong>Delegate access, check sizes, audit forwarding rules. The <strong>external forwarding audit</strong> is critical for security — identifies any mailboxes silently forwarding to external addresses (data exfiltration risk). Run monthly. <span class="tag tag-danger">AUDIT FORWARDING</span></td>
+          </tr>
+
+          <!-- ── STALE ACCOUNTS CLEANUP ── -->
+          <tr class="cmd-row" data-search="powershell stale accounts inactive users last sign in cleanup audit 90 days disabled guest">
+            <td><code class="code-cell cmd-ps"># Find accounts with no sign-in for 90+ days:
+$cutoff = (Get-Date).AddDays(-90)
+Get-MgUser -All -Property DisplayName,UserPrincipalName,AccountEnabled,SignInActivity |
+    Where-Object {
+        $_.AccountEnabled -eq $true -and
+        ($_.SignInActivity.LastSignInDateTime -lt $cutoff -or
+         $_.SignInActivity.LastSignInDateTime -eq $null)
+    } |
+    Select DisplayName,UserPrincipalName,
+        @{N="LastSignIn";E={$_.SignInActivity.LastSignInDateTime}} |
+    Export-Csv "C:\Stale-Accounts-$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation
+
+Write-Host "Report saved." -ForegroundColor Green
+
+# Find all guest (B2B) accounts:
+Get-MgUser -Filter "userType eq 'Guest'" -Property DisplayName,UserPrincipalName,SignInActivity |
+    Select DisplayName,UserPrincipalName,@{N="LastSignIn";E={$_.SignInActivity.LastSignInDateTime}} |
+    Format-Table</code></td>
+            <td class="desc-cell"><strong>Stale Account Audit</strong>Finds active accounts with no sign-in in 90 days — common compliance requirement. Also lists all Guest (B2B) accounts. Export CSV for manager review before bulk-disabling. Requires <code>AuditLog.Read.All</code> Graph scope. <span class="tag tag-tip">RUN MONTHLY</span></td>
+          </tr>
+
+          <!-- ── GROUPS REPORT ── -->
+          <tr class="cmd-row" data-search="powershell groups report members export entra azure ad all groups list membership">
+            <td><code class="code-cell cmd-ps"># Export all groups with member count:
+Get-MgGroup -All -Property DisplayName,GroupTypes,SecurityEnabled,MailEnabled,Description |
+    Select DisplayName,
+        @{N="Type";E={ if($_.GroupTypes -contains "Unified"){"M365"} elseif($_.SecurityEnabled){"Security"} else {"Distribution"} }},
+        Description,
+        @{N="Members";E={(Get-MgGroupMember -GroupId $_.Id -All).Count}} |
+    Export-Csv "C:\Groups-Report-$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation
+
+# List all members of a specific group:
+$g = Get-MgGroup -Filter "displayName eq 'VPN-Users'"
+Get-MgGroupMember -GroupId $g.Id -All |
+    ForEach-Object { Get-MgUser -UserId $_.Id -Property DisplayName,UserPrincipalName } |
+    Select DisplayName,UserPrincipalName | Format-Table</code></td>
+            <td class="desc-cell"><strong>Groups &amp; Membership Report</strong>Exports all groups with type classification and member count. Use to identify empty groups, oversized security groups, or before a Conditional Access policy change. The member-count loop can be slow on large tenants — run outside business hours. <span class="tag tag-info">AUDIT</span></td>
+          </tr>
+
+          <!-- ── MFA STATUS REPORT ── -->
+          <tr class="cmd-row" data-search="powershell mfa status report authentication methods entra users without mfa registered">
+            <td><code class="code-cell cmd-ps"># Report on users and their registered auth methods:
+$users = Get-MgUser -All -Property DisplayName,UserPrincipalName,AccountEnabled |
+    Where-Object AccountEnabled -eq $true
+
+$report = foreach ($u in $users) {
+    $methods = Get-MgUserAuthenticationMethod -UserId $u.Id
+    [PSCustomObject]@{
+        DisplayName = $u.DisplayName
+        UPN         = $u.UserPrincipalName
+        MFAMethods  = ($methods.AdditionalProperties["@odata.type"] -join ", ")
+        HasMFA      = ($methods.Count -gt 1)   # Password alone = 1 method
+    }
+}
+
+$report | Export-Csv "C:\MFA-Status-$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation
+$report | Where-Object HasMFA -eq $false |
+    Select DisplayName,UPN | Format-Table
+
+Write-Host "Users without MFA: $(($report | Where-Object HasMFA -eq $false).Count)"</code></td>
+            <td class="desc-cell"><strong>MFA Enrollment Status Report</strong>Lists all enabled users and their registered authentication methods. Exports to CSV and prints users with no MFA enrolled. Essential for Conditional Access planning — know your exposure before enforcing MFA. <span class="tag tag-admin">SCOPE: UserAuthenticationMethod.Read.All</span></td>
+          </tr>
+
+          <!-- ── TEAMS & SHAREPOINT ── -->
+          <tr class="cmd-row" data-search="powershell teams sharepoint sites owners members external sharing guest access report">
+            <td><code class="code-cell cmd-ps"># List all Teams:
+Connect-MicrosoftTeams
+Get-Team | Select DisplayName,Visibility,Archived | Format-Table
+
+# Get members of a Team:
+$team = Get-Team -DisplayName "IT Infrastructure"
+Get-TeamUser -GroupId $team.GroupId | Select User,Role | Format-Table
+
+# Add a member to a Team:
+Add-TeamUser -GroupId $team.GroupId -User "user@domain.com" -Role Member
+
+# Find Teams with external (guest) members:
+Get-Team | ForEach-Object {
+    $guests = Get-TeamUser -GroupId $_.GroupId | Where-Object Role -eq Guest
+    if ($guests) {
+        [PSCustomObject]@{ Team=$_.DisplayName; Guests=($guests.User -join ", ") }
+    }
+} | Format-Table</code></td>
+            <td class="desc-cell"><strong>Microsoft Teams Management</strong>List teams, manage membership, and audit guest access. The guest audit is important — teams with external members may expose internal files. Run quarterly and review with team owners. <span class="tag tag-info">TEAMS</span></td>
+          </tr>
+
+          <!-- ── ENTRA ROLES ── -->
+          <tr class="cmd-row" data-search="powershell entra roles directory admin global admin list who has role privileged identity management pim">
+            <td><code class="code-cell cmd-ps"># List all Entra directory roles and their members:
+$roles = Get-MgDirectoryRole
+foreach ($role in $roles) {
+    $members = Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id
+    if ($members) {
+        Write-Host "`n=== $($role.DisplayName) ===" -ForegroundColor Cyan
+        $members | ForEach-Object {
+            $u = Get-MgUser -UserId $_.Id -ErrorAction SilentlyContinue
+            if ($u) { Write-Host "  $($u.DisplayName) — $($u.UserPrincipalName)" }
+        }
+    }
+}
+
+# Export Global Admins specifically:
+$gaRole = Get-MgDirectoryRole | Where-Object DisplayName -eq "Global Administrator"
+Get-MgDirectoryRoleMember -DirectoryRoleId $gaRole.Id |
+    ForEach-Object { Get-MgUser -UserId $_.Id -Property DisplayName,UserPrincipalName } |
+    Select DisplayName,UserPrincipalName |
+    Export-Csv "C:\GlobalAdmins-$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation</code></td>
+            <td class="desc-cell"><strong>Entra Directory Role Audit</strong>Lists all privileged role assignments — who has Global Admin, User Admin, Exchange Admin, etc. Export Global Admins to CSV for compliance reviews. Best practice: Global Admin count should be 2–4 break-glass accounts maximum. <span class="tag tag-danger">PRIVILEGE AUDIT</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<footer>
+  <span>NetEng Command Reference &nbsp;·&nbsp; Built for the tech team &nbsp;·&nbsp; Windows · macOS · Linux · FortiGate · Kubernetes · GitLab</span>
+</footer>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearSearch');
+  const resultsBar = document.getElementById('resultsBar');
+  const resultsCount = document.getElementById('resultsCount');
+  const searchTermEl = document.getElementById('searchTerm');
+  const noResults = document.getElementById('noResults');
+  const navPills = document.querySelectorAll('.nav-pill');
+
+  let currentSection = 'all';
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('.cmd-table td').forEach(td => {
+      td.querySelectorAll('mark').forEach(m => {
+        m.outerHTML = m.innerHTML;
+      });
+    });
+  }
+
+  function doSearch(query) {
+    clearHighlights();
+    const q = query.trim().toLowerCase();
+    const rows = document.querySelectorAll('.cmd-row');
+    let matchCount = 0;
+
+    rows.forEach(row => {
+      const searchData = (row.dataset.search || '').toLowerCase();
+      const textContent = row.textContent.toLowerCase();
+      const match = !q || searchData.includes(q) || textContent.includes(q);
+
+      const sectionId = row.closest('section').id.replace('sec-', '');
+      const sectionMatch = currentSection === 'all' || sectionId === currentSection;
+
+      if (match && sectionMatch) {
+        row.classList.remove('hidden');
+        matchCount++;
+        if (q) {
+          row.querySelectorAll('td').forEach(td => {
+            td.innerHTML = highlight(td.innerHTML, query.trim());
+          });
+        }
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+
+    // Hide/show sections
+    document.querySelectorAll('.section').forEach(sec => {
+      const secId = sec.id.replace('sec-', '');
+      // Troubleshoot section: show based on section filter only, never hide on search
+      if (secId === 'troubleshoot') {
+        if (currentSection === 'all' || currentSection === 'troubleshoot') {
+          sec.classList.remove('all-hidden');
+        } else {
+          sec.classList.add('all-hidden');
+        }
+        return;
+      }
+      const visibleRows = sec.querySelectorAll('.cmd-row:not(.hidden)');
+      sec.classList.toggle('all-hidden', visibleRows.length === 0);
+    });
+
+    if (q) {
+      resultsBar.classList.add('visible');
+      resultsCount.textContent = matchCount;
+      searchTermEl.textContent = query.trim();
+      clearBtn.style.display = 'block';
+    } else {
+      resultsBar.classList.remove('visible');
+      clearBtn.style.display = matchCount < rows.length ? 'block' : 'none';
+    }
+
+    noResults.classList.toggle('visible', matchCount === 0 && currentSection !== 'troubleshoot');
+  }
+
+  searchInput.addEventListener('input', () => doSearch(searchInput.value));
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    doSearch('');
+    clearBtn.style.display = 'none';
+    searchInput.focus();
+  });
+
+  // Section filter
+  window.filterSection = function(section) {
+    currentSection = section;
+    navPills.forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+
+    document.querySelectorAll('.section').forEach(sec => {
+      const id = sec.id.replace('sec-', '');
+      if (section === 'all') {
+        sec.classList.remove('all-hidden');
+      } else {
+        sec.classList.toggle('all-hidden', id !== section);
+      }
+    });
+
+    // Re-apply any active search
+    doSearch(searchInput.value);
+  };
+
+  // Copy buttons
+  document.querySelectorAll('.code-cell').forEach(cell => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copy';
+    btn.title = 'Copy to clipboard';
+    cell.appendChild(btn);
+
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const text = cell.innerText.replace('copy', '').trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = 'copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+      } catch {}
+    });
+  });
+
+  // Scroll to top on load
+  window.addEventListener('load', () => window.scrollTo(0, 0));
+
+  // Back to top button
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // Open all ts-cards by default
+  document.querySelectorAll('.ts-card').forEach(card => card.classList.add('open'));
+
+  // Toggle troubleshooting cards
+  window.toggleCard = function(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  };
+
+  // Copy buttons for ts-step-cmd blocks
+  document.querySelectorAll('.ts-step-cmd').forEach(block => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copy';
+    btn.style.cssText = 'display:block;margin-top:4px;font-size:10px;';
+    block.parentNode.insertBefore(btn, block.nextSibling);
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(block.innerText.trim());
+        btn.textContent = 'copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+      } catch {}
+    });
+  });
+
+  // Keyboard shortcut for search
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      searchInput.blur();
+    }
+  });
+</script>
+
+</body>
+</html>
